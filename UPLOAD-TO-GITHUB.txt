@@ -1,0 +1,26 @@
+EASY GITHUB UPLOAD — NO FOLDERS
+================================
+
+This version contains only files, so you do not need to drag folders.
+
+1. Extract games-online-render-EASY.zip and open the extracted folder.
+2. Open your smoko-hangout repository on GitHub.
+3. Choose Add file → Upload files.
+4. Click "choose your files" instead of dragging.
+5. In the file picker, open the extracted folder, press Ctrl+A, then Open.
+6. Wait for the files to upload, then click Commit changes.
+
+Your repository's main page must show these directly at the top level:
+- package.json
+- server.js
+- render.yaml
+- index.html
+- online.js
+- party.js
+- poker.js, werewolf.js, chess.js, utils.js
+
+Do not upload the ZIP itself. There should be no lib or public folder in this version.
+
+If an old "render (1).yaml" remains, delete it or leave it unused; the file Render uses is exactly "render.yaml".
+
+After uploading, go to Render and choose Manual Deploy → Deploy latest commit.

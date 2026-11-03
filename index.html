@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five-Card Draw Poker — Offline Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: #f2ead8; min-height: 100vh; position: relative; overflow-x: hidden;
+    background:
+      radial-gradient(ellipse 80% 55% at 50% -5%, rgba(220,38,38,.45) 0%, rgba(120,10,20,.25) 42%, transparent 70%),
+      radial-gradient(ellipse 70% 50% at 85% 110%, rgba(180,20,35,.30) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 45% at 10% 100%, rgba(140,15,28,.22) 0%, transparent 60%),
+      linear-gradient(160deg, #1c0508 0%, #0d0d0f 45%, #050505 100%);
+    background-attachment: fixed; }
+  /* faint playing-card suits woven across the whole background */
+  body::before { content: "♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣";
+    position: fixed; inset: -40%; z-index: 0; pointer-events: none;
+    font-size: 54px; line-height: 1.9; letter-spacing: 26px; word-break: break-all;
+    color: rgba(255,255,255,.045); transform: rotate(-14deg); }
+  body::after { content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.55) 100%); }
+  .screen, #gameScreen { position: relative; z-index: 1; }
+  /* fanned playing cards on the setup screen */
+  .card-fan { display: flex; justify-content: center; align-items: flex-end; height: 104px; margin-bottom: 2px; }
+  .fan-card { width: 64px; height: 92px; background: linear-gradient(160deg, #ffffff, #e8e4da); border-radius: 9px; border: none;
+    box-shadow: 0 10px 22px rgba(0,0,0,.65); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 24px; color: #111; transform-origin: bottom center; }
+  .fan-card .suit { font-size: 30px; line-height: 1; }
+  .fan-card.red { color: #c0272d; }
+  .fan-card { margin: 0 -3px; }
+  .fan-card:nth-child(1) { transform: rotate(-22deg) translateY(14px); }
+  .fan-card:nth-child(2) { transform: rotate(-11deg) translateY(5px); z-index: 2; }
+  .fan-card:nth-child(3) { transform: rotate(0deg); z-index: 3; }
+  .fan-card:nth-child(4) { transform: rotate(11deg) translateY(5px); z-index: 4; }
+  .fan-card:nth-child(5) { transform: rotate(22deg) translateY(14px); z-index: 5; }
+  button { cursor: pointer; border: none; border-radius: 10px; font-weight: 700; transition: transform .08s, filter .15s; }
+  button:hover { filter: brightness(1.15); } button:active { transform: scale(.97); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  input, select { border-radius: 10px; border: none; background: #10231a; color: #fff; padding: 11px 13px; font-size: 16px; }
+  input:focus, select:focus { outline: none; }
+  .screen { max-width: 680px; margin: 0 auto; padding: 34px 18px; text-align: center; }
+  .logo { font-size: 60px; }
+  h1 { font-size: clamp(28px, 6vw, 44px); color: #d4af37; letter-spacing: 1px; margin: 6px 0 4px; text-shadow: 0 2px 12px rgba(212,175,55,.35); }
+  .tagline { color: #d8c6c6; margin-bottom: 26px; line-height: 1.5; }
+  .card-box { background: rgba(24,4,8,.78); border: none; border-radius: 18px; padding: 22px; margin-bottom: 16px; text-align: left; }
+  .card-box h2 { color: #d4af37; font-size: 18px; margin-bottom: 12px; text-align: center; }
+  .btn-gold { background: linear-gradient(180deg, #e8c85a, #b8912a); color: #241a00; padding: 14px 22px; font-size: 17px; width: 100%; margin-top: 10px; }
+  .btn-green { background: linear-gradient(180deg, #2e8b62, #1c5c3f); color: #fff; padding: 12px 20px; font-size: 16px; }
+  .btn-ghost { background: rgba(255,255,255,.1); color: #f2ead8; padding: 10px 16px; }
+  .btn-red { background: linear-gradient(180deg, #c0392b, #8e2418); color: #fff; padding: 12px 20px; }
+  label { display: block; font-size: 13px; color: #c4a3a8; margin: 12px 0 5px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+  .name-row { display: flex; gap: 8px; margin-bottom: 8px; } .name-row span { font-size: 22px; line-height: 44px; }
+  .name-row input { flex: 1; }
+  .hint { color: #c4a3a8; font-size: 13px; margin-top: 8px; text-align: center; line-height: 1.5; }
+  .rules { font-size: 14px; line-height: 1.7; color: #cfdccf; }
+
+  #gameScreen { display: none; max-width: 1000px; margin: 0 auto; padding: 14px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+  .table-wrap { position: relative; background: radial-gradient(ellipse at center, #8e1522 0%, #6d0f1c 48%, #42060f 78%, #26030a 100%); border: none; outline: none; border-radius: 50% / 42%; min-height: 420px; margin: 14px 6px 8px; box-shadow: inset 0 0 70px rgba(0,0,0,.65), 0 18px 40px rgba(0,0,0,.6); overflow: hidden; }
+  .table-wrap::before { content: "♠ ♥ ♦ ♣"; position: absolute; left: 50%; top: 47%; transform: translate(-50%,-50%); font-size: 44px; letter-spacing: 18px; color: rgba(255,255,255,.06); pointer-events: none; white-space: nowrap; }
+  .table-wrap::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.5) 100%); pointer-events: none; }
+  .center-info, #seats { z-index: 1; }
+  #seats { position: absolute; inset: 0; }
+  .center-info { position: absolute; left: 50%; top: 46%; transform: translate(-50%,-50%); text-align: center; width: 72%; pointer-events: none; }
+  .pot { font-size: 26px; font-weight: 900; color: #ffe98a; text-shadow: 0 2px 6px #000; }
+  .phase-msg { color: #eaf5ec; font-size: 15px; margin-top: 4px; text-shadow: 0 1px 4px #000; }
+  .seat { position: absolute; width: 150px; text-align: center; transform: translate(-50%,-50%); }
+  .seat .avatar { font-size: 32px; background: rgba(0,0,0,.45); border: none; width: 60px; height: 60px; line-height: 54px; border-radius: 50%; margin: 0 auto; position: relative; }
+  .seat.turn .avatar { box-shadow: 0 0 18px #ffd94d; }
+  .seat.folded { opacity: .45; }
+  .seat .pname { font-weight: 800; font-size: 14px; margin-top: 3px; text-shadow: 0 1px 3px #000; }
+  .seat .pchips { color: #ffe98a; font-size: 13px; font-weight: 700; }
+  .seat .pbet { color: #fff; background: #b8912a; border-radius: 999px; display: inline-block; padding: 1px 9px; font-size: 12px; font-weight: 800; margin-top: 2px; }
+  .seat .dealer-btn { position: absolute; right: 20px; top: 0; background: #fff; color: #000; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; font-weight: 900; line-height: 22px; border: none; }
+  .mini-cards { display: flex; justify-content: center; gap: 3px; margin-top: 5px; min-height: 38px; }
+  .pos-bottom { left: 50%; top: 87%; } .pos-top { left: 50%; top: 13%; }
+  .pos-left { left: 13%; top: 50%; } .pos-right { left: 87%; top: 50%; }
+  .pcard { width: 46px; height: 64px; background: #fdfdf8; color: #111; border-radius: 7px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 17px; box-shadow: 0 3px 8px rgba(0,0,0,.45); border: none; user-select: none; }
+  .pcard.small { width: 25px; height: 36px; font-size: 10px; border-radius: 5px; }
+  .pcard.red { color: #c0272d; } .pcard .suit { font-size: 19px; line-height: 1; } .pcard.small .suit { font-size: 11px; }
+  .pcard.back { background: repeating-linear-gradient(45deg, #8e1f2f, #8e1f2f 5px, #a52a3a 5px, #a52a3a 10px); border: none; }
+  .pcard.selected { transform: translateY(-14px); outline: none; box-shadow: 0 12px 18px rgba(0,0,0,.55); }
+  .pcard.clickable { cursor: pointer; } .pcard.clickable:hover { transform: translateY(-7px); }
+  .winner-glow { outline: none; box-shadow: 0 0 16px #ffd94d !important; }
+  .my-area { text-align: center; margin-top: 4px; }
+  .my-cards { display: flex; justify-content: center; gap: 8px; margin: 8px 0; min-height: 84px; align-items: center; }
+  .my-cards .pcard { width: 58px; height: 82px; font-size: 21px; } .my-cards .pcard .suit { font-size: 25px; }
+  .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; min-height: 50px; }
+  .controls button { padding: 13px 24px; font-size: 16px; }
+  .raise-box { display: none; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,.35); padding: 8px 12px; border-radius: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .raise-box input[type=range] { width: 150px; padding: 0; }
+  .raise-box .amt { font-weight: 900; color: #ffe98a; min-width: 52px; }
+  .banner { text-align: center; font-size: 20px; font-weight: 900; color: #ffd94d; min-height: 28px; text-shadow: 0 2px 8px #000; }
+  .panel { background: rgba(0,0,0,.35); border: none; border-radius: 14px; padding: 12px; margin-top: 10px; }
+  .panel h3 { color: #d4af37; font-size: 14px; margin-bottom: 8px; }
+  #log { list-style: none; font-size: 13px; line-height: 1.65; max-height: 140px; overflow-y: auto; }
+  .passgate { background: rgba(0,0,0,.45); border: none; border-radius: 16px; padding: 26px 18px; text-align: center; max-width: 520px; margin: 10px auto; }
+  .tutorial-btn { background: rgba(255,255,255,.08); color: #f5ecec; padding: 10px 16px; font-size: 14px; }
+  .tutorial-btn.active { background: linear-gradient(180deg, #e63946, #9e1b28); color: #fff; box-shadow: 0 4px 14px rgba(230,57,70,.4); }
+  #tutorialContent { background: rgba(0,0,0,.3); border-radius: 14px; padding: 16px; line-height: 1.75; }
+  #tutorialContent h3 { color: #ffd94d; font-size: 17px; margin-bottom: 6px; }
+  #tutorialContent .tut-cards { display: flex; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
+  /* compact seats when the table gets crowded */
+  .seat.compact { width: 112px; } .seat.compact .avatar { width: 46px; height: 46px; font-size: 24px; line-height: 41px; }
+  .seat.tiny { width: 92px; } .seat.tiny .avatar { width: 38px; height: 38px; font-size: 20px; line-height: 34px; }
+  .seat.tiny .pname { font-size: 12px; } .seat.tiny .pchips { font-size: 11px; }
+  @keyframes coachPulse { 0%,100% { box-shadow: 0 0 6px rgba(255,217,77,.55); } 50% { box-shadow: 0 0 22px rgba(255,217,77,.95); } }
+  .coach-pick { animation: coachPulse 1.1s ease-in-out infinite; }
+  .pcard.coach-suggest { box-shadow: 0 0 16px rgba(255,217,77,.95), 0 8px 14px rgba(0,0,0,.4); transform: translateY(-8px); }
+  @media (max-width: 700px) { .seat { width: 106px; } .seat .avatar { width: 46px; height: 46px; font-size: 24px; line-height: 41px; } .table-wrap { min-height: 370px; } .my-cards .pcard { width: 50px; height: 72px; } }
+
+  /* ===== Google Solitaire-inspired typography — red & black edition ===== */
+  body, button, input, select { font-family: "Google Sans", "Product Sans", Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+  h1 { font-family: "Google Sans", "Product Sans", Roboto, -apple-system, "Segoe UI", Arial, sans-serif; font-weight: 700; letter-spacing: .5px; color: #ffffff; text-shadow: 0 2px 14px rgba(230,57,70,.45); }
+  h1 .accent { color: #e63946; }
+  .card-box h2, .panel h3 { font-weight: 600; letter-spacing: .3px; }
+  .tagline, .rules, .hint, label { font-weight: 400; }
+  .seat .pname { font-weight: 600; }
+  .pot { font-weight: 700; letter-spacing: .3px; }
+  button { border-radius: 999px; font-weight: 600; letter-spacing: .3px; }
+  input, select { border-radius: 12px; font-weight: 400; }
+
+  /* Google Solitaire-style cards: clean white, rank + suit tucked in the top-left corner */
+  .pcard { border-radius: 10px; border: none; background: linear-gradient(180deg, #ffffff, #f8f9fa);
+    box-shadow: 0 1px 3px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.25);
+    align-items: flex-start; justify-content: flex-start; padding: 5px 7px; font-weight: 500; }
+  .pcard > span:first-child { font-size: 19px; line-height: 1; }
+  .pcard .suit { font-size: 17px; line-height: 1.05; }
+  .pcard.small { border-radius: 6px; padding: 2px 4px; }
+  .pcard.small > span:first-child { font-size: 11px; }
+  .pcard.small .suit { font-size: 10px; }
+  .my-cards .pcard { border-radius: 12px; padding: 7px 9px; }
+  .my-cards .pcard > span:first-child { font-size: 25px; }
+  .my-cards .pcard .suit { font-size: 23px; }
+  .pcard.back { border: none; padding: 0; }
+  .fan-card { font-family: "Google Sans", "Product Sans", Roboto, -apple-system, "Segoe UI", Arial, sans-serif; font-weight: 500; border-radius: 10px; }
+
+  /* ===== Chess ===== */
+  .chess-sq { aspect-ratio: 1; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; user-select:none; line-height:1; }
+  .chess-sq.light { background:#ecd9bd; } .chess-sq.dark { background:#a8513f; }
+  .chess-sq.selected { background:#e8c85a !important; }
+  .chess-sq.lastmove { box-shadow: inset 0 0 0 100px rgba(255,233,138,.28); }
+  .chess-sq.movedot::after { content:""; position:absolute; width:26%; height:26%; border-radius:50%; background:rgba(20,60,25,.35); }
+  .chess-sq.capturedot::after { content:""; position:absolute; inset:6%; border-radius:50%; box-shadow: inset 0 0 0 4px rgba(160,20,20,.55); background:transparent; }
+  .chess-sq.incheck { background:#e63946 !important; }
+  .chess-sq.coachfrom { box-shadow: inset 0 0 0 100px rgba(255,217,77,.45); }
+  .chess-piece { text-shadow: 0 1px 2px rgba(0,0,0,.7), 0 0 3px rgba(0,0,0,.5); pointer-events:none; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Noto Sans Symbols", "DejaVu Sans", sans-serif; }
+
+  /* ===== Google Solitaire-style fields — clean, flat, pill-shaped ===== */
+  input:not([type="range"]), select {
+    background: rgba(255,255,255,.06); color: #f5ecec; border: none; border-radius: 999px;
+    padding: 13px 20px; font-size: 16px; width: 100%;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 14px rgba(0,0,0,.18);
+  }
+  input:not([type="range"])::placeholder { color: rgba(245,236,236,.45); }
+  input:not([type="range"]):focus, select:focus {
+    outline: none; border: none; background: rgba(255,255,255,.09);
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  }
+  select {
+    appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 46px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e63946' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 18px center;
+  }
+  select option { color: #f5ecec; background: #1c0a0e; }
+  /* name fields blend into the background — smoky glass pill, avatar inside */
+  .name-row {
+    background: rgba(255,255,255,.06); border-radius: 999px; align-items: center;
+    padding: 5px 10px 5px 16px; margin-bottom: 10px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 14px rgba(0,0,0,.18);
+  }
+  .name-row > span { line-height: 1; font-size: 22px; }
+  .name-row input:not([type="range"]) {
+    background: transparent; box-shadow: none; border-radius: 999px;
+    color: #f5ecec; padding: 10px 8px;
+  }
+  .name-row:focus-within { background: rgba(255,255,255,.09); box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+  .name-row input:not([type="range"]):focus { box-shadow: none; }
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP ============ -->
+<div class="screen" id="setupScreen">
+  <div class="card-fan" aria-hidden="true">
+    <div class="fan-card"><span>A</span><span class="suit">♠</span></div>
+    <div class="fan-card red"><span>K</span><span class="suit">♥</span></div>
+    <div class="fan-card"><span>Q</span><span class="suit">♣</span></div>
+    <div class="fan-card red"><span>J</span><span class="suit">♦</span></div>
+    <div class="fan-card"><span>10</span><span class="suit">♠</span></div>
+  </div>
+  <h1>FIVE-CARD <span class="accent">DRAW</span></h1>
+  <p class="tagline">The offline edition — runs entirely on this device, no internet needed.<br>Play against bots, or pass-and-play with friends on this screen. Fun chips only!</p>
+
+  <div style="display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; background:rgba(24,4,8,.78); border-radius:999px; padding:10px 16px; max-width:520px; margin:0 auto 18px;">
+    <span style="font-weight:700;">🤖 AI talking:</span>
+    <select id="aiTalkSelect" style="width:auto; padding:9px 38px 9px 16px;">
+      <option value="text" selected>💬 Text bubbles</option>
+      <option value="voice">🔊 Text + spoken voice</option>
+      <option value="off">🔇 AI stays quiet</option>
+    </select>
+  </div>
+
+  <div class="card-box">
+    <h2>🪑 Who's playing?</h2>
+    <label>Poker type</label>
+    <select id="variantSelect" style="width:100%;">
+      <option value="draw">🃏 5-Card Draw — the classic (draw &amp; replace cards)</option>
+      <option value="holdem">🤠 Texas Hold'em — 2 cards each + 5 shared cards</option>
+      <option value="omaha">🌽 Omaha — 4 cards each + 5 shared cards</option>
+    </select>
+    <p class="hint" id="variantHint" style="text-align:left;">🃏 <b>5-Card Draw:</b> 5 cards each, bet, swap the cards you don't want, bet again. Best hand wins.</p>
+    <label>👥 Players at the table</label>
+    <select id="tableSizeSelect" style="width:100%;">
+      <option value="2">2 players</option>
+      <option value="3">3 players</option>
+      <option value="4" selected>4 players</option>
+      <option value="5">5 players</option>
+      <option value="6">6 players</option>
+      <option value="7">7 players</option>
+      <option value="8">8 players</option>
+      <option value="9">9 players</option>
+      <option value="10">10 players (full table!)</option>
+    </select>
+    <label>Game mode</label>
+    <select id="modeSelect" style="width:100%;">
+      <option value="bots">🤖 Me vs Bots (just me on this device)</option>
+      <option value="pass">👨‍👩‍👧 Pass &amp; Play (friends on this device, bots fill the rest)</option>
+    </select>
+
+    <div id="soloBox">
+      <label>Your name</label>
+      <div class="name-row"><span>🧑</span><input id="soloName" value="You" maxlength="16"></div>
+      <p class="hint" style="text-align:left;">🤖 Bots will fill every other seat at the table size you picked above — up to 9 bots for a full 10-player game. All AIs in this app now play at <b>IQ 113</b> level (bright club-player smarts).</p>
+    </div>
+
+    <div id="passBox" style="display:none;">
+      <label>Players on this device (cards stay hidden between turns!)</label>
+      <div style="max-height:300px; overflow-y:auto; padding-right:4px;">
+      <div class="name-row"><span>🧑</span><input class="pname-input" value="Player 1" maxlength="16"></div>
+      <div class="name-row"><span>👩</span><input class="pname-input" value="Player 2" maxlength="16"></div>
+      <div class="name-row"><span>🧔</span><input class="pname-input" placeholder="Player 3 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👵</span><input class="pname-input" placeholder="Player 4 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👱</span><input class="pname-input" placeholder="Player 5 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🧕</span><input class="pname-input" placeholder="Player 6 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👳</span><input class="pname-input" placeholder="Player 7 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🧓</span><input class="pname-input" placeholder="Player 8 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👲</span><input class="pname-input" placeholder="Player 9 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🦸</span><input class="pname-input" placeholder="Player 10 (optional)" maxlength="16"></div>
+      </div>
+      <p class="hint">Add up to 10 friends here! Any seats left over (up to the table size above) are filled by bots. You need at least 2 seats filled in total.</p>
+    </div>
+
+    <button class="btn-gold" id="startBtn">▶️ Deal Me In!</button>
+  </div>
+
+  <div class="card-box">
+    <h2>🐺 Werewolf / Mafia</h2>
+    <p style="text-align:center; color:#d8c6c6; font-size:14px; line-height:1.6;">The social deduction game! Secret roles, a deadly night, and a village vote by day. Works pass-and-play on this device — bots fill the village (5–10 players).</p>
+    <label>👥 Villagers at the table</label>
+    <select id="wolfTotalSelect" style="width:100%;">
+      <option value="5">5 players</option>
+      <option value="6">6 players</option>
+      <option value="7" selected>7 players</option>
+      <option value="8">8 players</option>
+      <option value="9">9 players</option>
+      <option value="10">10 players</option>
+    </select>
+    <label>Players on this device (bots fill the rest)</label>
+    <div style="max-height:240px; overflow-y:auto; padding-right:4px;">
+      <div class="name-row"><span>🧑</span><input class="wolf-name-input" value="Player 1" maxlength="16"></div>
+      <div class="name-row"><span>👩</span><input class="wolf-name-input" value="Player 2" maxlength="16"></div>
+      <div class="name-row"><span>🧔</span><input class="wolf-name-input" placeholder="Player 3 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👵</span><input class="wolf-name-input" placeholder="Player 4 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👱</span><input class="wolf-name-input" placeholder="Player 5 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🧕</span><input class="wolf-name-input" placeholder="Player 6 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👳</span><input class="wolf-name-input" placeholder="Player 7 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🧓</span><input class="wolf-name-input" placeholder="Player 8 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>👲</span><input class="wolf-name-input" placeholder="Player 9 (optional)" maxlength="16"></div>
+      <div class="name-row"><span>🦸</span><input class="wolf-name-input" placeholder="Player 10 (optional)" maxlength="16"></div>
+    </div>
+    <button class="btn-gold" id="wolfStartBtn">🐺 Start Werewolf / Mafia</button>
+    <button class="btn-gold" id="wolfAiBtn" style="background:linear-gradient(180deg,#5a6cff,#2c3ea8); color:#fff;">🤖 Play vs AI Village — IQ 113 (just me)</button>
+    <button class="btn-green" id="wolfTutBtn" style="width:100%; margin-top:10px;">🎓 Play the Werewolf Tutorial</button>
+    <p class="hint">Roles (Werewolves 🐺, Seer 🔮, Doctor 💉, Villagers) are dealt in secret — the device gets passed so nobody sees anyone else's role.</p>
+  </div>
+
+  <div class="card-box">
+    <h2>♟️ Chess</h2>
+    <p style="text-align:center; color:#d8c6c6; font-size:14px; line-height:1.6;">Classic 2-player chess — against the AI or pass-and-play — plus <b>Chess Royale</b>: free-for-all chess for 3, 4 or 5 players on one big board!</p>
+    <label>Chess type</label>
+    <select id="chessVariantSelect" style="width:100%;">
+      <option value="standard">♔ Standard Chess (2 players, full rules)</option>
+      <option value="royale3">👑 Chess Royale — 3 players (free-for-all)</option>
+      <option value="royale4">👑 Chess Royale — 4 players (free-for-all)</option>
+      <option value="royale5">👑 Chess Royale — 5 players (free-for-all)</option>
+    </select>
+    <label>Humans on this device (the rest are AI)</label>
+    <select id="chessHumansSelect" style="width:100%;">
+      <option value="1" selected>1 — just me (rest AI)</option>
+      <option value="2">2 humans</option>
+      <option value="3">3 humans</option>
+      <option value="4">4 humans</option>
+      <option value="5">5 humans (no AI)</option>
+    </select>
+    <p class="hint" id="chessHint" style="text-align:left;">♔ <b>Standard:</b> full chess rules — castling, en passant, promotion, check &amp; checkmate. Pick 2 humans above for pass-and-play, or 1 to face the AI.</p>
+    <button class="btn-gold" id="chessStartBtn">♟️ Start Chess</button>
+    <button class="btn-green" id="chessTutBtn" style="width:100%; margin-top:10px;">🎓 Play the Chess Tutorial (vs AI, coach-guided)</button>
+  </div>
+
+  <div class="card-box rules">
+    <h2>🎓 Poker Tutorials</h2>
+    <p style="text-align:center; color:#d8c6c6; font-size:13px; margin-bottom:12px;">New to a game? Pick one and learn it in under a minute:</p>
+    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:14px;">
+      <button class="tutorial-btn" data-tut="draw">▶️ Play: 🃏 5-Card Draw</button>
+      <button class="tutorial-btn" data-tut="holdem">▶️ Play: 🤠 Texas Hold'em</button>
+      <button class="tutorial-btn" data-tut="omaha">▶️ Play: 🌽 Omaha</button>
+    </div>
+    <div id="tutorialContent"></div>
+    <div style="margin-top:14px; padding-top:12px; box-shadow:0 -1px 0 rgba(255,255,255,.08);">
+      🏅 <b>Hand rankings (same in every game, best → worst):</b><br>
+      Royal Flush · Straight Flush · Four of a Kind · Full House · Flush · Straight · Three of a Kind · Two Pair · One Pair · High Card<br>
+      💰 <b>Every game:</b> blinds 5/10, 1,000 fun chips to start, free rebuys — and any hand can end early if everyone else folds!
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div id="gameScreen">
+  <div class="topbar">
+    <div id="gameTitle">🃏 <b>Five-Card Draw</b> <span style="color:#c4a3a8;">(offline)</span></div>
+    <button class="btn-ghost" id="newGameBtn">↩️ New Game / Setup</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="center-info">
+      <div class="pot" id="potDisplay">Pot: 0</div>
+      <div id="boardCards" style="display:flex; justify-content:center; gap:5px; margin:8px 0; min-height:52px;"></div>
+      <div class="phase-msg" id="phaseMsg">Waiting…</div>
+    </div>
+    <div id="seats"></div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <div id="coachPanel" style="display:none; background:rgba(20,10,2,.72); border-radius:16px; padding:16px 18px; margin:10px auto; max-width:640px; box-shadow:0 8px 24px rgba(0,0,0,.35);">
+    <div id="coachTitle" style="color:#ffd94d; font-weight:700; font-size:17px; margin-bottom:6px;">🎓 Coach</div>
+    <div id="coachText" style="line-height:1.65; color:#fdf6e0;"></div>
+    <div id="coachButtons" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;"></div>
+  </div>
+
+  <div id="passGate"></div>
+
+  <div class="my-area" id="myArea">
+    <div id="myLabel" style="font-weight:800;"></div>
+    <div class="my-cards" id="myCards"></div>
+    <div class="raise-box" id="raiseBox">
+      <span>Raise to:</span>
+      <input type="range" id="raiseRange">
+      <span class="amt" id="raiseAmt"></span>
+      <button class="btn-gold" id="confirmRaiseBtn" style="width:auto;margin:0;padding:10px 18px;">Raise</button>
+      <button class="btn-ghost" id="cancelRaiseBtn">Cancel</button>
+    </div>
+    <div class="controls" id="controls"></div>
+  </div>
+
+  <div class="panel">
+    <h3>📜 HAND LOG</h3>
+    <ul id="log"></ul>
+  </div>
+</div>
+
+<div id="aiBubble" style="display:none; position:fixed; right:16px; bottom:16px; z-index:999; max-width:min(340px,86vw); background:rgba(16,8,10,.94); border-radius:16px; padding:12px 16px; box-shadow:0 12px 32px rgba(0,0,0,.55); text-align:left;">
+  <div id="aiBubbleName" style="color:#ffd94d; font-weight:800; font-size:13px; margin-bottom:3px;"></div>
+  <div id="aiBubbleText" style="line-height:1.5; font-size:15px;"></div>
+</div>
+
+<!-- ============ CHESS ============ -->
+<div id="chessScreen" style="display:none; max-width:800px; margin:0 auto; padding:16px 14px 30px; position:relative; z-index:1;">
+  <div class="topbar">
+    <div id="chessTitle">♟️ <b>Chess</b></div>
+    <button class="btn-ghost" id="chessExitBtn">↩️ Back to games</button>
+  </div>
+  <div id="chessCoach" style="display:none; background:rgba(20,10,2,.72); border-radius:16px; padding:16px 18px; margin:10px 0; box-shadow:0 8px 24px rgba(0,0,0,.35);">
+    <div style="color:#ffd94d; font-weight:700; font-size:17px; margin-bottom:6px;">🎓 Chess Coach</div>
+    <div id="chessCoachText" style="line-height:1.65; color:#fdf6e0;"></div>
+  </div>
+  <div id="chessPlayers" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:10px 0;"></div>
+  <div id="chessStatus" style="text-align:center; font-size:19px; font-weight:800; color:#ffd94d; min-height:26px; text-shadow:0 2px 8px #000;"></div>
+  <div id="chessBoardWrap" style="display:flex; justify-content:center; margin:12px 0;">
+    <div id="chessBoard" style="display:grid; gap:0; box-shadow:0 16px 40px rgba(0,0,0,.55); border-radius:8px; overflow:hidden;"></div>
+  </div>
+  <div id="chessAction" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:10px 0;"></div>
+  <div class="panel">
+    <h3>📜 GAME LOG</h3>
+    <ul id="chessLog" style="list-style:none; font-size:13px; line-height:1.65; max-height:140px; overflow-y:auto;"></ul>
+  </div>
+</div>
+
+<!-- ============ WEREWOLF ============ -->
+<div id="wolfScreen" style="display:none; max-width:800px; margin:0 auto; padding:16px 14px 30px; position:relative; z-index:1;">
+  <div class="topbar">
+    <div id="wolfTitle">🐺 <b>Werewolf / Mafia</b></div>
+    <button class="btn-ghost" id="wolfExitBtn">↩️ Back to games</button>
+  </div>
+  <div id="wolfCoach" style="display:none; background:rgba(20,10,2,.72); border-radius:16px; padding:16px 18px; margin:10px 0; box-shadow:0 8px 24px rgba(0,0,0,.35);">
+    <div style="color:#ffd94d; font-weight:700; font-size:17px; margin-bottom:6px;">🎓 Werewolf Coach</div>
+    <div id="wolfCoachText" style="line-height:1.65; color:#fdf6e0;"></div>
+  </div>
+  <div style="text-align:center; margin:12px 0 4px;">
+    <button class="btn-red" id="wolfDenBtn">🐺 Wolf Den — secret pack chat (wolves only)</button>
+  </div>
+  <div id="wolfDen" class="panel" style="display:none;">
+    <h3>🐺 WOLF DEN — SECRET PACK CHAT</h3>
+    <div id="wolfDenBody"></div>
+  </div>
+  <div class="panel" style="text-align:center;">
+    <div id="wolfPhase" style="font-size:24px; font-weight:800; color:#ffd94d;"></div>
+    <div id="wolfMain" style="line-height:1.7; margin-top:8px;"></div>
+    <div id="wolfAction" style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:16px;"></div>
+  </div>
+  <div class="panel">
+    <h3>🏘️ THE VILLAGE</h3>
+    <div id="wolfPlayers" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;"></div>
+  </div>
+  <div class="panel">
+    <h3>📜 VILLAGE CHRONICLE</h3>
+    <ul id="wolfLog" style="list-style:none; font-size:13px; line-height:1.65; max-height:160px; overflow-y:auto;"></ul>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ================= Cards & hand evaluation =================
+const SUITS = ['s','h','d','c'];
+const SUIT_CHAR = { s:'♠', h:'♥', d:'♦', c:'♣' };
+const RANK_LABEL = { 11:'J', 12:'Q', 13:'K', 14:'A' };
+const rankLabel = r => RANK_LABEL[r] || r;
+const isRed = s => s === 'h' || s === 'd';
+const START_CHIPS = 1000, SMALL_BLIND = 5, BIG_BLIND = 10;
+const BOT_NAMES = ['Dead-Eye Dan','Lucky Lucy','Slick Rick','Calamity Jane','Wild Bill','Vegas Vera','Bankroll Bob','Quiet Quinn','Fast Eddie','River Ruth'];
+const BOT_AVATARS = ['🤠','🍀','😎','🔥','🎩','💃','🧢','🤫','⚡','🌊'];
+const HUMAN_AVATARS = ['🧑','👩','🧔','👵','👱','🧕','👳','🧓','👲','🦸'];
+const $ = id => document.getElementById(id);
+
+function makeDeck() {
+  const d = [];
+  for (const s of SUITS) for (let r = 2; r <= 14; r++) d.push({ rank: r, suit: s });
+  for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; }
+  return d;
+}
+function evaluateHand(cards) {
+  const ranks = cards.map(c => c.rank).sort((a,b) => b - a);
+  const isFlush = cards.every(c => c.suit === cards[0].suit);
+  const uniq = [...new Set(ranks)];
+  let isStraight = false, straightHigh = 0;
+  if (uniq.length === 5) {
+    if (uniq[0] - uniq[4] === 4) { isStraight = true; straightHigh = uniq[0]; }
+    else if (JSON.stringify(uniq) === JSON.stringify([14,5,4,3,2])) { isStraight = true; straightHigh = 5; }
+  }
+  const counts = {};
+  ranks.forEach(r => counts[r] = (counts[r] || 0) + 1);
+  const groups = Object.entries(counts).map(([r,c]) => ({ rank:+r, count:c })).sort((a,b) => b.count - a.count || b.rank - a.rank);
+  let cat, name;
+  if (isStraight && isFlush) { cat = 8; name = straightHigh === 14 ? 'Royal Flush' : 'Straight Flush'; }
+  else if (groups[0].count === 4) { cat = 7; name = 'Four of a Kind'; }
+  else if (groups[0].count === 3 && groups[1].count === 2) { cat = 6; name = 'Full House'; }
+  else if (isFlush) { cat = 5; name = 'Flush'; }
+  else if (isStraight) { cat = 4; name = 'Straight'; }
+  else if (groups[0].count === 3) { cat = 3; name = 'Three of a Kind'; }
+  else if (groups[0].count === 2 && groups[1].count === 2) { cat = 2; name = 'Two Pair'; }
+  else if (groups[0].count === 2) { cat = 1; name = 'One Pair'; }
+  else { cat = 0; name = 'High Card'; }
+  const tiebreak = isStraight ? [straightHigh] : groups.flatMap(g => Array(g.count).fill(g.rank));
+  return { cat, name, tiebreak, score: cat * 1e10 + tiebreak.reduce((a,r,i) => a + r * Math.pow(100, 4 - i), 0) };
+}
+
+function combos(arr, k) {
+  if (k === 0) return [[]];
+  if (arr.length < k) return [];
+  const [first, ...rest] = arr;
+  return combos(rest, k - 1).map(c => [first, ...c]).concat(combos(rest, k));
+}
+// Best 5-card hand for Hold'em (any 5 of hole+board) and Omaha (exactly 2 hole + 3 board)
+function evaluateBest(gp, board, variant) {
+  let best = null;
+  const consider = cards => { const e = evaluateHand(cards); if (!best || e.score > best.score) best = e; };
+  if (variant === 'omaha') {
+    combos(gp.cards, 2).forEach(h => combos(board, 3).forEach(b => consider([...h, ...b])));
+  } else {
+    combos([...gp.cards, ...board], 5).forEach(consider);
+  }
+  return best || evaluateHand(gp.cards.slice(0, 5));
+}
+const cardShort = c => `${rankLabel(c.rank)}${SUIT_CHAR[c.suit]}`;
+
+// ================= State =================
+let currentVariant = 'draw';
+let tutorialMode = false, coachIntro = null; // coachIntro = step index during the intro, null once playing
+let players = [];       // {name, isBot, avatar, chips}
+let G = null;           // current hand state
+let handId = 0;         // guards stale bot timers
+let revealed = false;   // pass-and-play: has current human tapped to reveal?
+let selectedDiscards = new Set();
+let logLines = [];
+
+function addLog(msg) { logLines.push(msg); if (logLines.length > 60) logLines.shift(); renderLog(); }
+function renderLog() { const ul = $('log'); if (!ul) return; ul.innerHTML = logLines.map(l => `<li>${l}</li>`).join(''); ul.scrollTop = ul.scrollHeight; }
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ================= AI talking (text bubbles + optional text-to-speech) =================
+let aiTalkMode = 'text', aiBubbleTimer = null;
+function aiTalk(name, avatar, text) {
+  if (aiTalkMode === 'off' || !text) return;
+  const bubble = $('aiBubble');
+  if (bubble) {
+    $('aiBubbleName').textContent = `${avatar || '🤖'} ${name}`;
+    $('aiBubbleText').textContent = text;
+    bubble.style.display = 'block';
+    clearTimeout(aiBubbleTimer);
+    aiBubbleTimer = setTimeout(() => { bubble.style.display = 'none'; }, 4200);
+  }
+  if (aiTalkMode === 'voice' && 'speechSynthesis' in window) {
+    try {
+      const clean = String(text).replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
+      if (!clean) return;
+      const u = new SpeechSynthesisUtterance(clean);
+      let hash = 0; for (const ch of String(name)) hash = (hash * 31 + ch.charCodeAt(0)) % 997;
+      u.pitch = 0.75 + (hash % 50) / 100;   // each bot gets its own voice pitch
+      u.rate = 0.95 + (hash % 20) / 100;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* speech not available in this browser — text bubble still shows */ }
+  }
+}
+const pickLine = arr => arr[Math.floor(Math.random() * arr.length)];
+const active = () => G.players.filter(p => !p.folded);
+const actionable = () => G.players.filter(p => !p.folded && !p.allIn);
+const multiHuman = () => players.filter(p => !p.isBot).length > 1;
+
+// ================= Game flow =================
+function startHand() {
+  handId++;
+  players.forEach(p => { if (p.isBot && p.chips <= 0) p.chips = START_CHIPS; });
+  const seats = players.filter(p => p.chips > 0);
+  if (seats.length < 2) { G = { phase:'between', players:[], pot:0, message:'Not enough players with chips — rebuy below!' }; render(); return; }
+  const deck = makeDeck();
+  const prevDealerName = G && G.players && G.players[G.dealerIdx] ? G.players[G.dealerIdx].ref.name : null;
+  let dealerIdx = 0;
+  if (prevDealerName) { const pi = seats.findIndex(p => p.name === prevDealerName); dealerIdx = pi === -1 ? 0 : (pi + 1) % seats.length; }
+  const dealCount = currentVariant === 'draw' ? 5 : currentVariant === 'omaha' ? 4 : 2;
+  G = {
+    variant: currentVariant, board: [],
+    phase: 'betting1', pot: 0, currentBet: 0, minRaise: BIG_BLIND, dealerIdx,
+    deck, winners: null, turnIdx: 0,
+    message: currentVariant === 'draw' ? 'First betting round — place your bets!' : 'Pre-flop betting — place your bets!',
+    players: seats.map(p => ({ ref: p, cards: deck.splice(0, dealCount), folded:false, allIn:false, bet:0, acted:false, drawDone:false, eval:null, won:false })),
+  };
+  if (currentVariant === 'draw') G.players.forEach(gp => gp.eval = evaluateHand(gp.cards));
+  const n = G.players.length;
+  const sbIdx = n === 2 ? dealerIdx : (dealerIdx + 1) % n;
+  const bbIdx = (sbIdx + 1) % n;
+  postBlind(sbIdx, SMALL_BLIND); postBlind(bbIdx, BIG_BLIND);
+  G.currentBet = Math.max(...G.players.map(p => p.bet));
+  G.turnIdx = n === 2 ? dealerIdx : (bbIdx + 1) % n;
+  selectedDiscards.clear(); revealed = !multiHuman();
+  addLog(`🃏 New hand — ${G.players[dealerIdx].ref.name} deals. Blinds ${SMALL_BLIND}/${BIG_BLIND}.`);
+  skipToActionable(); render(); maybeBot();
+}
+function postBlind(idx, amount) {
+  const p = G.players[idx];
+  const amt = Math.min(amount, p.ref.chips);
+  p.ref.chips -= amt; p.bet += amt; G.pot += amt;
+  if (p.ref.chips === 0) p.allIn = true;
+}
+function skipToActionable() {
+  let guard = 0;
+  while (guard++ < 20) { const p = G.players[G.turnIdx]; if (!p || p.folded || p.allIn) { G.turnIdx = (G.turnIdx + 1) % G.players.length; continue; } break; }
+}
+const roundComplete = () => { const a = actionable(); return a.length === 0 || a.every(p => p.acted && p.bet === G.currentBet); };
+
+function handleAction(gp, action, raiseTo) {
+  if (!G || !G.phase.startsWith('betting') || G.players[G.turnIdx] !== gp || gp.folded || gp.allIn) return;
+  if (action === 'fold') { gp.folded = true; gp.acted = true; addLog(`${gp.ref.name} folds.`); }
+  else if (action === 'check') { if (G.currentBet > gp.bet) return; gp.acted = true; addLog(`${gp.ref.name} checks.`); }
+  else if (action === 'call') {
+    const amt = Math.min(G.currentBet - gp.bet, gp.ref.chips);
+    if (amt <= 0) return;
+    gp.ref.chips -= amt; gp.bet += amt; G.pot += amt;
+    if (gp.ref.chips === 0) gp.allIn = true;
+    gp.acted = true; addLog(`${gp.ref.name} calls ${amt}.`);
+  } else if (action === 'raise' || action === 'allin') {
+    let target = action === 'allin' ? gp.bet + gp.ref.chips : Math.floor(raiseTo || 0);
+    target = Math.min(target, gp.bet + gp.ref.chips);
+    if (target <= G.currentBet) return;
+    if (target < G.currentBet + G.minRaise && target !== gp.bet + gp.ref.chips) return;
+    const raiseSize = target - G.currentBet, amt = target - gp.bet;
+    gp.ref.chips -= amt; gp.bet = target; G.pot += amt;
+    if (raiseSize >= G.minRaise) G.minRaise = raiseSize;
+    G.currentBet = target;
+    if (gp.ref.chips === 0) gp.allIn = true;
+    G.players.forEach(x => { if (x !== gp && !x.folded && !x.allIn) x.acted = false; });
+    gp.acted = true; addLog(`${gp.ref.name} raises to ${target}${gp.allIn ? ' (all-in!)' : ''}.`);
+  } else return;
+
+  revealed = !multiHuman();
+  if (active().length === 1) return endEarly();
+  if (roundComplete()) return advancePhase();
+  G.turnIdx = (G.players.indexOf(gp) + 1) % G.players.length;
+  skipToActionable();
+  if (roundComplete()) return advancePhase();
+  render(); maybeBot();
+}
+
+function beginStreet() {
+  G.turnIdx = (G.dealerIdx + 1) % G.players.length;
+  skipToActionable(); revealed = !multiHuman();
+  if (actionable().length === 0) { // everyone all-in: deal out the rest
+    if (G.phase === 'betting4') return showdown();
+    return advancePhase();
+  }
+  render(); maybeBot();
+}
+function advancePhase() {
+  G.players.forEach(p => { p.bet = 0; p.acted = false; });
+  G.currentBet = 0; G.minRaise = BIG_BLIND;
+  if (G.variant !== 'draw') {
+    if (G.phase === 'betting4') return showdown();
+    if (G.phase === 'betting1') {
+      G.board.push(G.deck.pop(), G.deck.pop(), G.deck.pop());
+      G.phase = 'betting2'; G.message = 'The Flop — betting round.';
+      addLog(`🎴 Flop: ${G.board.map(cardShort).join(' ')}`);
+    } else if (G.phase === 'betting2') {
+      G.board.push(G.deck.pop());
+      G.phase = 'betting3'; G.message = 'The Turn — betting round.';
+      addLog(`🎴 Turn: ${cardShort(G.board[3])}  (board: ${G.board.map(cardShort).join(' ')})`);
+    } else if (G.phase === 'betting3') {
+      G.board.push(G.deck.pop());
+      G.phase = 'betting4'; G.message = 'The River — final betting round!';
+      addLog(`🎴 River: ${cardShort(G.board[4])}  (board: ${G.board.map(cardShort).join(' ')})`);
+    }
+    return beginStreet();
+  }
+  if (G.phase === 'betting1') {
+    G.phase = 'drawing'; G.message = 'Draw phase — swap the cards you don\'t want.';
+    addLog('✂️ Draw phase: choose cards to replace.');
+    revealed = !multiHuman(); render(); runDrawStep();
+  } else if (G.phase === 'betting2') showdown();
+}
+
+function runDrawStep() {
+  if (!G || G.phase !== 'drawing') return;
+  const next = G.players.find(p => !p.folded && !p.drawDone);
+  if (!next) {
+    if (active().length === 1) return endEarly();
+    G.phase = 'betting2'; G.message = 'Final betting round!';
+    addLog('💰 Final betting round.');
+    G.players.forEach(p => { p.bet = 0; p.acted = false; });
+    G.currentBet = 0; G.minRaise = BIG_BLIND;
+    G.turnIdx = (G.dealerIdx + 1) % G.players.length;
+    skipToActionable(); revealed = !multiHuman();
+    if (actionable().length === 0) return showdown();
+    render(); maybeBot(); return;
+  }
+  G.drawTurn = next;
+  if (next.ref.isBot) {
+    const id = handId;
+    setTimeout(() => { if (id === handId) botDraw(next); }, 750);
+  }
+  render();
+}
+
+function submitDraw(gp, discards) {
+  if (!G || G.phase !== 'drawing' || gp.drawDone || gp.folded) return;
+  discards.forEach(i => { gp.cards[i] = G.deck.pop(); });
+  gp.drawDone = true; gp.eval = evaluateHand(gp.cards);
+  addLog(discards.length === 0 ? `${gp.ref.name} stands pat.` : `${gp.ref.name} draws ${discards.length} card${discards.length > 1 ? 's' : ''}.`);
+  selectedDiscards.clear(); revealed = !multiHuman();
+  runDrawStep();
+}
+
+function endEarly() {
+  const w = active()[0];
+  w.ref.chips += G.pot; w.won = true;
+  G.winners = [{ name: w.ref.name, amount: G.pot, hand: 'everyone else folded' }];
+  G.phase = 'showdown'; G.message = `${w.ref.name} wins ${G.pot} — everyone else folded.`;
+  addLog(`🏆 ${G.message}`); G.pot = 0;
+  if (w.ref.isBot) aiTalk(w.ref.name, w.ref.avatar, pickLine(['Everyone scared off? Good.', 'I\'ll just take this pot then.', 'That\'s how you apply pressure.', 'No contest.']));
+  render();
+}
+function showdown() {
+  const contenders = active();
+  contenders.forEach(p => p.eval = G.variant === 'draw' ? evaluateHand(p.cards) : evaluateBest(p, G.board, G.variant));
+  const best = Math.max(...contenders.map(p => p.eval.score));
+  const winners = contenders.filter(p => p.eval.score === best);
+  const share = Math.floor(G.pot / winners.length);
+  let rem = G.pot - share * winners.length;
+  winners.forEach(w => { w.ref.chips += share + (rem-- > 0 ? 1 : 0); w.won = true; });
+  G.winners = winners.map(w => ({ name: w.ref.name, amount: share, hand: w.eval.name }));
+  G.phase = 'showdown';
+  G.message = winners.length > 1 ? `Split pot! ${winners.map(w => w.ref.name).join(' & ')} with ${winners[0].eval.name}.` : `${winners[0].ref.name} wins ${G.pot} with ${winners[0].eval.name}!`;
+  addLog(`🏆 ${G.message}`); G.pot = 0;
+  const botWinner = winners.find(w => w.ref.isBot);
+  if (botWinner && Math.random() < 0.85) aiTalk(botWinner.ref.name, botWinner.ref.avatar, pickLine([`${botWinner.eval.name}. Told you.`, 'Read \'em and weep.', 'The pot likes me better.', 'Pleasure doing business.', 'That one was never in doubt.']));
+  render();
+}
+
+// ================= Bots =================
+function botStrength(gp) {
+  if (G.variant !== 'draw') {
+    if (G.board.length >= 3) { const e = evaluateBest(gp, G.board, G.variant); let s = e.cat * 2; if (e.cat === 1) s += 0.3; return s; }
+    // pre-flop: pairs, high cards, suited/connected potential
+    const rs = gp.cards.map(c => c.rank).sort((a,b) => b - a);
+    const counts = {}; gp.cards.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
+    const pairRank = Math.max(0, ...Object.entries(counts).filter(([,n]) => n >= 2).map(([r]) => +r));
+    let s = 0;
+    if (pairRank) s = 3 + pairRank / 7;                              // any pair is strong pre-flop
+    else s = rs.slice(0,2).reduce((a,r) => a + r, 0) / 9;           // high cards
+    if (gp.cards.every(c => c.suit === gp.cards[0].suit)) s += 0.5;  // suited
+    if (Math.max(...rs) - Math.min(...rs) <= 4) s += 0.3;            // connected-ish
+    if (G.variant === 'omaha' && Object.keys(counts).length < gp.cards.length) s += 0.4;
+    return s;
+  }
+  const e = gp.eval; let s = e.cat * 2;
+  if (e.cat === 1) s += (e.tiebreak[0] - 2) / 10;              // a pair of Aces >> a pair of 3s
+  if (e.cat === 2) s += Math.max(...e.tiebreak) / 20;          // higher top pair = stronger two-pair
+  if (e.cat === 0) {
+    const suits = {}; gp.cards.forEach(c => suits[c.suit] = (suits[c.suit] || 0) + 1);
+    if (Object.values(suits).includes(4)) s += 1.2;            // flush draw
+    const uniq = [...new Set(gp.cards.map(c => c.rank))].sort((a,b) => a - b);
+    for (let i = 0; i + 3 < uniq.length; i++) if (uniq[i + 3] - uniq[i] <= 4) { s += 1.0; break; } // straight draw
+    if (gp.cards.some(c => c.rank >= 13)) s += 0.4;
+  }
+  return s;
+}
+function maybeBot() {
+  if (!G || !G.phase.startsWith('betting')) return;
+  const gp = G.players[G.turnIdx];
+  if (!gp || !gp.ref.isBot) return;
+  const id = handId;
+  setTimeout(() => {
+    if (id !== handId || !G || !G.phase.startsWith('betting') || G.players[G.turnIdx] !== gp) return;
+    const strength = botStrength(gp), toCall = G.currentBet - gp.bet, pot = Math.max(G.pot, 1), rnd = Math.random();
+    let action = 'check', raiseTo = null;
+    if (toCall === 0) {
+      if (strength >= 5 || (strength >= 3 && rnd < 0.5) || rnd < 0.05) { action = 'raise'; raiseTo = G.currentBet + G.minRaise + Math.floor(Math.random() * 4) * 10; }
+    } else {
+      const ratio = toCall / pot;
+      if (strength >= 6 && rnd < 0.6) { action = 'raise'; raiseTo = G.currentBet + G.minRaise * 2; }
+      else if (strength >= 2.5) action = 'call';
+      else if (strength >= 1.2 && ratio < 0.35) action = 'call';
+      else if (strength >= 0.8 && ratio < 0.15) action = 'call';
+      else if (rnd < 0.04) { action = 'raise'; raiseTo = G.currentBet + G.minRaise; }
+      else action = 'fold';
+    }
+    if (action === 'raise') { raiseTo = Math.min(raiseTo, gp.bet + gp.ref.chips); if (raiseTo <= G.currentBet) action = toCall > 0 ? 'call' : 'check'; }
+    // poker-table chatter
+    if (action === 'raise' && Math.random() < 0.6) aiTalk(gp.ref.name, gp.ref.avatar, pickLine(['Raise. Feeling brave?', 'Let\'s make this interesting…', 'Too rich for your blood?', 'I like my chances. A lot.', 'Pressure\'s on you now.']));
+    else if (action === 'call' && Math.random() < 0.22) aiTalk(gp.ref.name, gp.ref.avatar, pickLine(['I\'ll see that.', 'Call. Show me something.', 'Worth a look…', 'I\'m not going anywhere.']));
+    else if (action === 'fold' && Math.random() < 0.25) aiTalk(gp.ref.name, gp.ref.avatar, pickLine(['Fine, take it.', 'I\'ll live to fight another hand.', 'Not worth it. I fold.', 'Hmph. Lucky.']));
+    handleAction(gp, action, raiseTo);
+  }, 850 + Math.random() * 800);
+}
+function suggestedDiscards(gp) {
+  const cards = gp.cards, e = gp.eval || evaluateHand(gp.cards);
+  let keep = new Set([0,1,2,3,4]);
+  if (e.cat === 2) {
+    const counts = {}; cards.forEach((c,i) => (counts[c.rank] = counts[c.rank] || []).push(i));
+    keep = new Set(Object.values(counts).filter(v => v.length === 2).flat());
+  } else if (e.cat === 1) {
+    const counts = {}; cards.forEach((c,i) => (counts[c.rank] = counts[c.rank] || []).push(i));
+    keep = new Set(Object.values(counts).find(v => v.length === 2));
+  } else if (e.cat === 0) {
+    const suits = {}; cards.forEach((c,i) => (suits[c.suit] = suits[c.suit] || []).push(i));
+    const ff = Object.values(suits).find(v => v.length === 4);
+    if (ff) keep = new Set(ff);
+    else {
+      const high = cards.map((c,i) => ({c,i})).filter(x => x.c.rank >= 11).map(x => x.i);
+      keep = new Set(high.length ? high : [cards.indexOf(cards.reduce((a,b) => a.rank > b.rank ? a : b))]);
+    }
+  }
+  return [0,1,2,3,4].filter(i => !keep.has(i));
+}
+function botDraw(gp) { submitDraw(gp, suggestedDiscards(gp)); }
+
+// ================= Rendering =================
+function cardEl(card, opts = {}) {
+  const d = document.createElement('div');
+  d.className = 'pcard' + (opts.small ? ' small' : '') + (opts.back ? ' back' : '') + (card && isRed(card.suit) ? ' red' : '') + (opts.selected ? ' selected' : '') + (opts.clickable ? ' clickable' : '') + (opts.winner ? ' winner-glow' : '');
+  if (!opts.back && card) d.innerHTML = `<span>${rankLabel(card.rank)}</span><span class="suit">${SUIT_CHAR[card.suit]}</span>`;
+  return d;
+}
+function currentHuman() {
+  if (!G) return null;
+  if (G.phase.startsWith('betting')) { const gp = G.players[G.turnIdx]; return gp && !gp.ref.isBot ? gp : null; }
+  if (G.phase === 'drawing') { const gp = G.drawTurn; return gp && !gp.ref.isBot ? gp : null; }
+  return null;
+}
+function render() {
+  if (!G) return;
+  $('potDisplay').textContent = `Pot: ${G.pot}`;
+  const boardEl = $('boardCards'); boardEl.innerHTML = '';
+  if (G.variant !== 'draw' && G.board && G.board.length) G.board.forEach(c => boardEl.appendChild(cardEl(c, {})));
+  $('phaseMsg').textContent = G.message || '';
+  const seatsEl = $('seats'); seatsEl.innerHTML = '';
+  const nSeats = players.length;
+  players.forEach((p, i) => {
+    const gp = G.players.find(x => x.ref === p);
+    const div = document.createElement('div');
+    const isTurn = gp && ((G.phase.startsWith('betting') && G.players[G.turnIdx] === gp) || (G.phase === 'drawing' && G.drawTurn === gp));
+    div.className = 'seat' + (nSeats > 8 ? ' tiny' : nSeats > 5 ? ' compact' : '') + (isTurn ? ' turn' : '') + (gp && gp.folded ? ' folded' : '');
+    // spread seats evenly around the oval, first player at the bottom
+    const angle = (90 + i * (360 / nSeats)) * Math.PI / 180;
+    div.style.left = (50 + 42 * Math.cos(angle)) + '%';
+    div.style.top = (50 + 39 * Math.sin(angle)) + '%';
+    let html = `<div class="avatar">${p.avatar}${gp && G.players[G.dealerIdx] === gp ? '<span class="dealer-btn">D</span>' : ''}</div>
+      <div class="pname">${esc(p.name)}${p.isBot ? ' 🤖' : ''}</div>
+      <div class="pchips">💰 ${p.chips}${gp && gp.allIn ? ' · ALL-IN' : ''}${!gp && p.chips <= 0 ? ' · broke' : ''}</div>
+      ${gp && gp.bet ? `<span class="pbet">bet ${gp.bet}</span>` : ''}
+      ${G.phase === 'showdown' && gp && !gp.folded && gp.eval ? `<div style="color:#ffd94d;font-weight:800;font-size:12px;">${gp.eval.name}</div>` : ''}
+      ${G.phase === 'drawing' && gp && !gp.folded && !gp.drawDone ? '<div style="font-size:12px;">✂️ thinking…</div>' : ''}`;
+    div.innerHTML = html;
+    const mc = document.createElement('div'); mc.className = 'mini-cards';
+    if (gp) {
+      if (G.phase === 'showdown' && !gp.folded) gp.cards.forEach(c => mc.appendChild(cardEl(c, { small:true, winner: gp.won })));
+      else gp.cards.forEach(() => mc.appendChild(cardEl(null, { small:true, back: !gp.folded })));
+    }
+    div.appendChild(mc);
+    seatsEl.appendChild(div);
+  });
+
+  const banner = $('banner');
+  if (G.phase === 'showdown' && G.winners) banner.textContent = '🏆 ' + G.winners.map(w => `${w.name} wins ${w.amount} (${w.hand})`).join(' · ');
+  else {
+    const h = currentHuman();
+    if (h && revealed) banner.textContent = G.phase === 'drawing' ? `✂️ ${h.ref.name}: tap cards to discard` : `⭐ ${h.ref.name}'s turn!`;
+    else if (G.phase === 'drawing') banner.textContent = '✂️ Draw phase';
+    else banner.textContent = '';
+  }
+  renderMyArea(); renderLog(); renderCoach();
+}
+
+function renderMyArea() {
+  const gate = $('passGate'), cardsEl = $('myCards'), controls = $('controls'), label = $('myLabel');
+  gate.innerHTML = ''; cardsEl.innerHTML = ''; controls.innerHTML = '';
+  $('raiseBox').style.display = 'none';
+  const mk = (txt, cls, fn, dis) => { const b = document.createElement('button'); b.textContent = txt; b.className = cls; b.disabled = !!dis; b.onclick = fn; controls.appendChild(b); return b; };
+
+  if (G.phase === 'showdown' || G.phase === 'between') {
+    label.textContent = '';
+    mk('▶️ Next Hand', 'btn-gold', () => startHand());
+    players.filter(p => !p.isBot && p.chips <= 0).forEach(p => mk(`💵 Rebuy ${p.name} (1,000 free)`, 'btn-green', () => { p.chips = START_CHIPS; addLog(`💵 ${p.name} rebuys for ${START_CHIPS}.`); render(); }));
+    return;
+  }
+
+  const h = currentHuman();
+  if (!h) {
+    const turnGp = G.phase.startsWith('betting') ? G.players[G.turnIdx] : G.drawTurn;
+    label.textContent = turnGp ? `Waiting for ${turnGp.ref.name}${turnGp.ref.isBot ? ' 🤖' : ''}…` : '';
+    return;
+  }
+
+  label.textContent = `${h.ref.avatar} ${h.ref.name} — 💰 ${h.ref.chips} chips`;
+  // Pass-and-play privacy gate
+  if (multiHuman() && !revealed) {
+    cardsEl.innerHTML = '<span style="color:#b9cdbf;">🙈 Cards hidden — pass the device!</span>';
+    gate.innerHTML = `<div class="passgate"><div style="font-size:34px;">📱➡️ ${h.ref.avatar}</div>
+      <div style="font-size:20px;font-weight:900;margin:8px 0;">Pass to ${esc(h.ref.name)}</div>
+      <div style="color:#d8c6c6;margin-bottom:14px;">Everyone else, no peeking!<br>👆 <b>${esc(h.ref.name)}, tap this box</b> when you're holding the device to see your cards.</div></div>`;
+    const pg = gate.querySelector('.passgate');
+    if (pg) { pg.style.cursor = 'pointer'; pg.onclick = () => { revealed = true; render(); }; }
+    mk(`👀 I'm ${h.ref.name} — Show My Cards`, 'btn-gold', () => { revealed = true; render(); });
+    return;
+  }
+  revealed = true;
+
+  const canSelect = G.phase === 'drawing';
+  const coachDiscards = (tutorialMode && canSelect) ? suggestedDiscards(h) : [];
+  h.cards.forEach((c, i) => {
+    const el = cardEl(c, { clickable: canSelect, selected: selectedDiscards.has(i) });
+    if (coachDiscards.includes(i) && !selectedDiscards.has(i)) el.classList.add('coach-suggest');
+    if (canSelect) el.onclick = () => { selectedDiscards.has(i) ? selectedDiscards.delete(i) : selectedDiscards.add(i); render(); };
+    cardsEl.appendChild(el);
+  });
+
+  if (G.phase === 'drawing') {
+    mk(selectedDiscards.size ? `✂️ Draw ${selectedDiscards.size} Card${selectedDiscards.size > 1 ? 's' : ''}` : '🖐️ Stand Pat (keep all)', 'btn-gold', () => submitDraw(h, [...selectedDiscards]));
+    return;
+  }
+  if (G.phase.startsWith('betting')) {
+    const toCall = G.currentBet - h.bet;
+    mk('Fold', 'btn-red', () => handleAction(h, 'fold'));
+    if (toCall === 0) mk('Check', 'btn-green', () => handleAction(h, 'check'));
+    else mk(`Call ${toCall}`, 'btn-green', () => handleAction(h, 'call'));
+    const maxRaiseTo = h.bet + h.ref.chips, minRaiseTo = G.currentBet + G.minRaise;
+    if (maxRaiseTo > G.currentBet) {
+      mk('Raise…', 'btn-gold', () => {
+        const box = $('raiseBox'); box.style.display = 'flex';
+        const range = $('raiseRange');
+        range.min = Math.min(minRaiseTo, maxRaiseTo); range.max = maxRaiseTo; range.value = Math.min(minRaiseTo, maxRaiseTo); range.step = 5;
+        $('raiseAmt').textContent = range.value;
+        range.oninput = () => $('raiseAmt').textContent = range.value;
+        $('confirmRaiseBtn').onclick = () => handleAction(h, 'raise', parseInt(range.value));
+        if (tutorialMode) $('confirmRaiseBtn').classList.add('coach-pick');
+      });
+      mk('All-In 💥', 'btn-gold', () => handleAction(h, 'allin'));
+    }
+  }
+}
+$('cancelRaiseBtn').onclick = () => $('raiseBox').style.display = 'none';
+
+// ================= Tutorials =================
+const tutCard = (r, s) => `<div class="pcard small${isRed(s) ? ' red' : ''}"><span>${r}</span><span class="suit">${SUIT_CHAR[s]}</span></div>`;
+const TUTORIALS = {
+  draw: `<h3>🃏 5-Card Draw — the classic</h3>
+    <b>Goal:</b> finish with the best 5-card poker hand.<br>
+    1️⃣ Everyone gets <b>5 cards</b>, face down. Two players post the blinds (5 and 10).<br>
+    2️⃣ <b>Bet:</b> fold, check/call, or raise, going around the table.<br>
+    3️⃣ <b>The Draw:</b> tap any of your cards to swap them for fresh ones — or <i>stand pat</i> and keep all 5.<br>
+    4️⃣ <b>Bet again</b>, then showdown. Best hand scoops the pot!<br>
+    <b>Example:</b> you're dealt a pair of Kings — keep the Kings, throw the other 3, and hope to improve:
+    <div class="tut-cards">${tutCard('K','s')}${tutCard('K','h')}${tutCard('7','d')}${tutCard('4','c')}${tutCard('2','s')}<span style="align-self:center;">➡️ keep the K K, draw 3 new cards</span></div>
+    💡 <b>Tips:</b> never split two pair to chase a straight · drawing 1 card to four of a flush is usually worth it · a pair of Jacks or better is a solid opener.`,
+  holdem: `<h3>🤠 Texas Hold'em — the world-famous one</h3>
+    <b>Goal:</b> make the best 5-card hand from your 2 cards + the 5 shared cards.<br>
+    1️⃣ Everyone gets <b>2 cards</b> of their own. Blinds are posted, then the first <b>betting round (pre-flop)</b>.<br>
+    2️⃣ <b>The Flop:</b> 3 shared cards land in the middle. Bet again.<br>
+    3️⃣ <b>The Turn:</b> a 4th shared card. Bet again.<br>
+    4️⃣ <b>The River:</b> the 5th shared card. Final betting, then showdown — use <b>any 5</b> of the 7 cards available to you.<br>
+    <b>Example:</b> you hold A♥ K♥ and the board runs out Q♥ J♥ 4♠ 9♦ 2♣ — that's a mighty ace-high flush draw that got there… or did it? Count the hearts!
+    <div class="tut-cards">${tutCard('A','h')}${tutCard('K','h')}<span style="align-self:center;">+ board</span>${tutCard('Q','h')}${tutCard('J','h')}${tutCard('4','s')}${tutCard('9','d')}${tutCard('2','c')}</div>
+    💡 <b>Tips:</b> pairs, big cards, and suited connectors are your best starting hands · position matters — acting last is power · don't fall in love with one pair on a scary board.`,
+  omaha: `<h3>🌽 Omaha — like Hold'em, but spicier</h3>
+    <b>Goal:</b> best 5-card hand — but with one crucial twist (see below!).<br>
+    1️⃣ Everyone gets <b>4 cards</b> of their own (not 2 like Hold'em).<br>
+    2️⃣ Same rhythm as Hold'em: <b>pre-flop</b> betting, then the <b>flop</b> (3 shared), <b>turn</b> (1), and <b>river</b> (1), betting after each.<br>
+    3️⃣ ⚠️ <b>THE GOLDEN RULE:</b> your final hand must use <b>exactly 2</b> of your 4 cards and <b>exactly 3</b> of the 5 shared cards. No more, no less!<br>
+    <b>Example:</b> the board shows four hearts — but if only one of your cards is a heart, you do <b>not</b> have a flush. You'd need a second heart in your hand.
+    <div class="tut-cards">${tutCard('A','h')}${tutCard('K','s')}${tutCard('Q','d')}${tutCard('J','c')}<span style="align-self:center;">+ board</span>${tutCard('10','h')}${tutCard('8','h')}${tutCard('5','h')}${tutCard('3','h')}${tutCard('2','s')}</div>
+    💡 <b>Tips:</b> with 4 cards each, huge hands are everywhere — sets, straights and flushes win far more often than one pair · hands that can make the <i>nuts</i> (the best possible hand) are gold.`,
+};
+$('tutorialContent').innerHTML = `🎮 <b>These aren't pages to read — they're games to play.</b><br>
+  Tap one above and you'll sit down at a practice table with a coach beside you. The coach explains your cards,
+  tells you what's happening at every step, <b>glows the button it recommends</b>, and even lights up the cards
+  it would throw away in the draw. Play the hand through, then play another — as many as you like, it's all fun chips.`;
+
+// ---------- Interactive guided tutorial ----------
+const TUT_STEPS = {
+  draw: [
+    ['Welcome to 5-Card Draw! 🃏', 'The goal is simple: finish with the best 5-card poker hand. You\'ll get 5 cards of your own — nobody else can see them. Two players each hand post small forced bets called <b>blinds</b> (5 and 10 chips) so there\'s always something to win.'],
+    ['Betting 💬', 'After the deal, everyone takes turns: <b>Fold</b> (give up), <b>Check/Call</b> (match the current bet — checking is free when nobody has bet), or <b>Raise</b> (bet more and make it expensive for everyone else!). The coach will glow the button it recommends each time.'],
+    ['The Draw ✂️', 'Then comes the fun part: tap any of your cards to swap them for fresh ones. Got a pair? Keep the pair, ditch the rest. The coach will make your suggested throw-away cards <b>glow</b> — tap them, then hit Draw. Or keep everything and "stand pat".'],
+    ['Showdown 🏆', 'One last betting round, then everyone still in shows their cards and the best hand wins the pot. Afterwards the coach will explain exactly why the winning hand won. Ready? Let\'s deal your first practice hand!'],
+  ],
+  holdem: [
+    ['Welcome to Texas Hold\'em! 🤠', 'The most popular poker game on Earth. You get just <b>2 cards</b> of your own — the rest of your hand comes from 5 <b>shared cards</b> dealt face-up in the middle of the table that everybody uses.'],
+    ['Four betting rounds 💬', 'You\'ll bet four times: after your 2 cards (<b>pre-flop</b>), after the first 3 shared cards (<b>the flop</b>), after the 4th (<b>the turn</b>), and after the 5th (<b>the river</b>). Fold, check/call, or raise each time — the coach glows its recommendation.'],
+    ['Making your hand 🖐️', 'Your final hand is the <b>best 5 cards</b> out of the 7 available to you (your 2 + the 5 shared). You can use both of yours, one, or even none — if the board itself is a monster, everyone left in splits it!'],
+    ['Showdown 🏆', 'After the river betting, remaining players show their 2 cards and the best 5-card combination wins. The coach will walk you through who won and why. Time to deal you in!'],
+  ],
+  omaha: [
+    ['Welcome to Omaha! 🌽', 'Omaha looks like Hold\'em — 5 shared cards in the middle, four betting rounds — but you get <b>FOUR cards</b> of your own instead of two. That means bigger hands and bigger action!'],
+    ['⚠️ The Golden Rule', 'Here\'s the one rule that makes Omaha Omaha: your final hand must use <b>exactly 2</b> of your 4 cards and <b>exactly 3</b> of the 5 shared cards. Four hearts on the board means nothing if only one of your cards is a heart — you need two in hand!'],
+    ['Betting 💬', 'Same rhythm as Hold\'em: pre-flop, flop (3 shared), turn (1), river (1), betting after each. With four cards each, expect straights, flushes and full houses to show up a lot — lonely pairs rarely win here.'],
+    ['Showdown 🏆', 'The coach will check the golden rule for you at showdown and explain the winning hand. Ready to try a practice hand?'],
+  ],
+};
+function describeHandForCoach(gp) {
+  const cardsTxt = gp.cards.map(cardShort).join(' ');
+  if (G.variant === 'draw') return `You have <b>${gp.eval.name}</b> (${cardsTxt}).`;
+  if (G.board.length >= 3) { const e = evaluateBest(gp, G.board, G.variant); return `Right now your best hand is <b>${e.name}</b> — your cards: ${cardsTxt} · board: ${G.board.map(cardShort).join(' ')}.`; }
+  const rs = gp.cards.map(c => c.rank).sort((a,b) => b - a);
+  const paired = rs.find((r, i) => rs.indexOf(r) !== i);
+  const suited = gp.cards.every(c => c.suit === gp.cards[0].suit);
+  let d = `Your cards: <b>${cardsTxt}</b>. `;
+  d += paired ? `You've got a pair already — a strong start! ` : (rs[0] >= 12 ? `Two+ high cards — promising. ` : `No pair yet — you'll be hoping the shared cards help. `);
+  if (suited) d += `They're all the same suit, so a flush is possible. `;
+  return d;
+}
+function coachAdvice(gp) {
+  const toCall = G.currentBet - gp.bet;
+  const s = botStrength(gp);
+  if (toCall === 0) {
+    if (s >= 4.5) return { action: 'raise', why: 'Your hand is strong — the coach likes betting it for value.' };
+    if (s >= 2.2) return { action: 'raise', why: 'Decent hand — a small bet can win it right here or build the pot.' };
+    return { action: 'check', why: 'It\'s free to see what happens next — the coach says check and take the free card(s).' };
+  }
+  if (s >= 5.5) return { action: 'raise', why: 'This hand is a monster — the coach says raise it up!' };
+  if (s >= 1.6) return { action: 'call', why: `Your hand is worth seeing the next step for ${toCall} chips.` };
+  if (s >= 0.9 && toCall <= G.pot * 0.25) return { action: 'call', why: `It\'s cheap (${toCall}) compared to the pot — worth a peek.` };
+  return { action: 'fold', why: 'The coach thinks this hand isn\'t worth paying for. Folding costs nothing — live to fight another hand!' };
+}
+function phaseLabel() {
+  if (!G) return '';
+  if (G.variant === 'draw') return G.phase === 'betting1' ? 'Betting round 1 of 2' : G.phase === 'drawing' ? 'The Draw' : G.phase === 'betting2' ? 'Final betting round' : '';
+  return { betting1: 'Pre-flop', betting2: 'The Flop', betting3: 'The Turn', betting4: 'The River' }[G.phase] || '';
+}
+function coachGuidance() {
+  const me = () => G.players.find(p => !p.ref.isBot);
+  if (G.phase === 'drawing') {
+    const h = currentHuman();
+    if (h) {
+      const dis = suggestedDiscards(h);
+      if (!dis.length) return `🖐️ <b>Stand pat!</b> The coach loves this hand (${h.eval.name}) — don't touch a thing. Hit <b>Stand Pat</b>.`;
+      return `✂️ <b>Draw time.</b> You have <b>${h.eval.name}</b>. The coach suggests throwing away the <b>glowing cards</b> (${dis.map(i => cardShort(h.cards[i])).join(', ')}) and keeping the rest. Tap the glowing cards, then hit the Draw button.`;
+    }
+    const bt = G.drawTurn;
+    return `👀 ${(bt ? bt.ref.name : 'A bot')} is choosing cards to swap. In the draw, everyone can replace up to 5 cards — watch how many they take, it hints at what they're holding!`;
+  }
+  if (G.phase.startsWith('betting')) {
+    const h = currentHuman();
+    if (h) {
+      const adv = coachAdvice(h);
+      const toCall = G.currentBet - h.bet;
+      return `${describeHandForCoach(h)}<br>💰 Pot: <b>${G.pot}</b>${toCall ? ` · it costs <b>${toCall}</b> to stay in` : ' · nobody has bet, so checking is free'}.<br>🎓 <b>Coach suggests: ${adv.action.toUpperCase()}</b> — ${adv.why}<br><i>Tap the glowing button, or choose your own adventure!</i>`;
+    }
+    const turnGp = G.players[G.turnIdx];
+    return `👀 It's <b>${turnGp ? turnGp.ref.name : ''}</b>'s move${phaseLabel() ? ` (${phaseLabel()})` : ''}. ${turnGp && turnGp.ref.isBot ? 'The practice bots play their own hands — watch what they do. Big bets usually mean big hands… usually!' : ''}`;
+  }
+  return '';
+}
+function renderCoach() {
+  const panel = $('coachPanel');
+  if (!tutorialMode) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  const title = $('coachTitle'), text = $('coachText'), btns = $('coachButtons');
+  btns.innerHTML = '';
+  const mkBtn = (label, cls, fn) => { const b = document.createElement('button'); b.textContent = label; b.className = cls; b.onclick = fn; btns.appendChild(b); };
+  const vTitle = VARIANT_INFO[currentVariant].title;
+
+  if (coachIntro !== null) {
+    const steps = TUT_STEPS[currentVariant];
+    const [h, t] = steps[coachIntro];
+    title.textContent = `🎓 ${vTitle} Tutorial — Step ${coachIntro + 1} of ${steps.length}`;
+    text.innerHTML = `<b>${h}</b><br>${t}`;
+    if (coachIntro > 0) mkBtn('⬅ Back', 'btn-ghost', () => { coachIntro--; render(); });
+    if (coachIntro < steps.length - 1) mkBtn('Got it ▶', 'btn-gold', () => { coachIntro++; render(); });
+    else mkBtn('🃏 Deal my practice hand!', 'btn-gold', () => { coachIntro = null; addLog('🎓 Practice hand dealt — good luck!'); startHand(); });
+    mkBtn('✖ Exit tutorial', 'btn-ghost', exitTutorial);
+    return;
+  }
+  if (G && G.phase === 'showdown') {
+    const myGp = G.players.find(p => !p.ref.isBot);
+    const iWon = myGp && myGp.won;
+    const winnerTxt = (G.winners || []).map(w => `<b>${esc(w.name)}</b> with <b>${esc(w.hand)}</b>`).join(' and ');
+    title.textContent = '🎓 Coach — Hand recap';
+    text.innerHTML = `${iWon ? '🎉 <b>You won that one!</b> ' : ''}${winnerTxt} took the pot.<br>` +
+      (myGp && !myGp.folded ? `Your final hand was <b>${myGp.eval ? myGp.eval.name : ''}</b>. ` : myGp && myGp.folded ? 'You folded this one — sometimes that\'s the smartest play in poker. ' : '') +
+      `<br>Play another practice hand to keep learning, or finish up and play for real!`;
+    mkBtn('🃏 Another practice hand', 'btn-gold', () => startHand());
+    mkBtn('🏁 Finish tutorial', 'btn-green', exitTutorial);
+    return;
+  }
+  title.textContent = `🎓 Coach${phaseLabel() ? ' — ' + phaseLabel() : ''}`;
+  text.innerHTML = coachGuidance() || 'Watch the table — your coach is studying the action…';
+  mkBtn('✖ Exit tutorial', 'btn-ghost', exitTutorial);
+  // glow the recommended action button
+  if (G && G.phase.startsWith('betting')) {
+    const h = currentHuman();
+    if (h) {
+      const adv = coachAdvice(h);
+      const target = [...document.querySelectorAll('#controls button')].find(b =>
+        adv.action === 'raise' ? b.textContent.startsWith('Raise') :
+        adv.action === 'call' ? b.textContent.startsWith('Call') :
+        adv.action === 'check' ? b.textContent.startsWith('Check') :
+        b.textContent.startsWith('Fold'));
+      if (target) target.classList.add('coach-pick');
+    }
+  }
+}
+function startTutorial(variant) {
+  currentVariant = variant;
+  tutorialMode = true; coachIntro = 0; handId++;
+  document.title = `${VARIANT_INFO[variant].title} Tutorial — Guided Practice`;
+  players = [
+    { name: 'You', isBot: false, avatar: '🧑', chips: START_CHIPS },
+    { name: 'Tutor Tess', isBot: true, avatar: '🎓', chips: START_CHIPS },
+    { name: 'Practice Pete', isBot: true, avatar: '🃏', chips: START_CHIPS },
+  ];
+  logLines = [];
+  $('setupScreen').style.display = 'none';
+  $('gameScreen').style.display = 'block';
+  const gt = $('gameTitle'); if (gt) gt.innerHTML = `🎓 <b>${VARIANT_INFO[variant].title} Tutorial</b> <span style="color:#c4a3a8;">(guided practice)</span>`;
+  G = { variant, board: [], phase: 'intro', pot: 0, currentBet: 0, minRaise: BIG_BLIND, dealerIdx: 0, deck: [], message: 'Your coach is getting the table ready…', winners: null, turnIdx: 0, players: [] };
+  addLog('🎓 Tutorial started — your coach will guide every step.');
+  render();
+}
+function exitTutorial() {
+  tutorialMode = false; coachIntro = null; handId++;
+  G = null;
+  $('coachPanel').style.display = 'none';
+  $('gameScreen').style.display = 'none';
+  $('setupScreen').style.display = 'block';
+}
+document.querySelectorAll('.tutorial-btn').forEach(b => b.onclick = () => startTutorial(b.dataset.tut));
+
+// ================= Setup =================
+$('aiTalkSelect').onchange = e => {
+  aiTalkMode = e.target.value;
+  if (aiTalkMode === 'voice') aiTalk('Game Announcer', '🎙️', 'AI voices on! The bots will now talk out loud.');
+  else if (aiTalkMode === 'text') aiTalk('Game Announcer', '🎙️', 'AI will chat in text bubbles.');
+};
+$('modeSelect').onchange = e => {
+  const pass = e.target.value === 'pass';
+  $('passBox').style.display = pass ? 'block' : 'none';
+  $('soloBox').style.display = pass ? 'none' : 'block';
+};
+$('newGameBtn').onclick = () => { handId++; G = null; $('gameScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; };
+const VARIANT_INFO = {
+  draw:   { title: '5-Card Draw',   hint: '🃏 <b>5-Card Draw:</b> 5 cards each, bet, swap the cards you don\'t want, bet again. Best hand wins.' },
+  holdem: { title: 'Texas Hold\'em', hint: '🤠 <b>Texas Hold\'em:</b> 2 cards each plus 5 shared cards in the middle (flop, turn, river). Make the best 5-card hand from any combination.' },
+  omaha:  { title: 'Omaha',         hint: '🌽 <b>Omaha:</b> 4 cards each plus 5 shared cards — but your hand must use exactly 2 of yours and 3 from the middle.' },
+};
+$('variantSelect').onchange = e => { $('variantHint').innerHTML = VARIANT_INFO[e.target.value].hint; };
+$('startBtn').onclick = () => {
+  tutorialMode = false; coachIntro = null;
+  currentVariant = $('variantSelect').value;
+  document.title = `${VARIANT_INFO[currentVariant].title} Poker — Offline Edition`;
+  const gt = $('gameTitle'); if (gt) gt.innerHTML = `🃏 <b>${VARIANT_INFO[currentVariant].title}</b> <span style="color:#c4a3a8;">(offline)</span>`;
+  players = [];
+  const tableSize = parseInt($('tableSizeSelect').value) || 4;
+  if ($('modeSelect').value === 'bots') {
+    const name = $('soloName').value.trim() || 'You';
+    players.push({ name, isBot: false, avatar: '🧑', chips: START_CHIPS });
+    for (let i = 0; i < tableSize - 1; i++) players.push({ name: BOT_NAMES[i % BOT_NAMES.length], isBot: true, avatar: BOT_AVATARS[i % BOT_AVATARS.length], chips: START_CHIPS });
+  } else {
+    const inputs = [...document.querySelectorAll('.pname-input')];
+    const names = inputs.map(x => x.value.trim());
+    names.forEach((nm, i) => { if (nm) players.push({ name: nm, isBot: false, avatar: HUMAN_AVATARS[i % HUMAN_AVATARS.length], chips: START_CHIPS }); });
+    const totalSeats = Math.min(10, Math.max(2, tableSize, players.length));
+    let bi = 0;
+    while (players.length < totalSeats) { players.push({ name: BOT_NAMES[bi % BOT_NAMES.length], isBot: true, avatar: BOT_AVATARS[bi % BOT_AVATARS.length], chips: START_CHIPS }); bi++; }
+    if (players.length < 2) { alert('Add at least 2 player names — you need 2+ seats filled.'); return; }
+  }
+  logLines = [];
+  $('setupScreen').style.display = 'none';
+  $('gameScreen').style.display = 'block';
+  addLog(`🎲 Game started! ${players.map(p => p.name).join(', ')} at the table.`);
+  startHand();
+};
+</script>
+<script>
+'use strict';
+/* ================= WEREWOLF / MAFIA ================= */
+const $w = id => document.getElementById(id);
+const WOLF_ROLES = {
+  wolf:    { name: '🐺 Werewolf', desc: 'Each night, the wolves secretly choose a villager to eliminate. By day, blend in and deflect suspicion!' },
+  seer:    { name: '🔮 Seer', desc: 'Each night, you may secretly investigate one player and learn whether they are a werewolf or not.' },
+  doctor:  { name: '💉 Doctor', desc: 'Each night, you may secretly protect one player (even yourself). If the wolves attack them, they survive!' },
+  villager:{ name: '🧑‍🌾 Villager', desc: 'No night powers — your weapons are your eyes, your logic, and your vote. Find the wolves before they eat the village!' },
+};
+let W = null, wolfGameId = 0, wolfTutorial = false, wolfForceAI = false;
+
+function wolfLog(msg) { W.log.push(msg); if (W.log.length > 60) W.log.shift(); renderWolfLog(); }
+function renderWolfLog() { const ul = $w('wolfLog'); if (ul) { ul.innerHTML = W.log.map(l => `<li>${l}</li>`).join(''); ul.scrollTop = ul.scrollHeight; } }
+function wolfCoach(text) { if (wolfTutorial) { $w('wolfCoach').style.display = 'block'; $w('wolfCoachText').innerHTML = text; } }
+
+/* ---- Wolf Den: secret pack chat ---- */
+function wolfChatSay(fromName, text) {
+  if (!W) return;
+  W.wolfChat.push({ from: fromName, text });
+  if (W.wolfChat.length > 50) W.wolfChat.shift();
+  if ($w('wolfDen').style.display !== 'none' && W.denUser) renderWolfDenBody();
+}
+function renderWolfDenBody() {
+  const body = $w('wolfDenBody');
+  if (!W) { body.innerHTML = ''; return; }
+  if (!W.denUser) {
+    body.innerHTML = `<p style="line-height:1.6;">This den is for <b>werewolves only</b>. To enter, tap <b>your own name</b> — if you're secretly a wolf, you're in. Villagers: honor system, no peeking! 🙈</p>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+      ${W.players.map(p => `<button class="btn-ghost" data-den-id="${p.id}">I am ${esc(p.name)}${p.alive ? '' : ' (eliminated)'}</button>`).join('')}
+      </div><div id="wolfDenDenied" style="color:#e28a8a; margin-top:8px;"></div>`;
+    body.querySelectorAll('[data-den-id]').forEach(b => b.onclick = () => {
+      const p = W.players.find(x => x.id === b.dataset.denId);
+      if (!p || p.role !== 'wolf') { $w('wolfDenDenied').textContent = `🚫 ${p ? esc(p.name) : ''} is not a werewolf… nice try, villager! The den stays sealed.`; return; }
+      W.denUser = p.id;
+      renderWolfDenBody();
+    });
+    return;
+  }
+  const me = W.players.find(p => p.id === W.denUser);
+  body.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+      <span>Chatting as <b>${esc(me.name)}</b> 🐺 · Pack: ${W.players.filter(p => p.role === 'wolf').map(p => esc(p.name) + (p.alive ? '' : ' ⚰️')).join(', ')}</span>
+      <button class="btn-ghost" id="wolfDenSwitch" style="padding:7px 12px;">Not me — switch</button>
+    </div>
+    <div id="wolfDenMsgs" style="background:rgba(0,0,0,.35); border-radius:12px; padding:12px; margin:12px 0; max-height:220px; overflow-y:auto; line-height:1.6;">
+      ${W.wolfChat.length ? W.wolfChat.map(m => `<div><b>${esc(m.from)}:</b> ${esc(m.text)}</div>`).join('') : '<i style="color:#c4a3a8;">The den is quiet… for now. Plot your hunt!</i>'}
+    </div>
+    <div style="display:flex; gap:8px;">
+      <input id="wolfDenInput" placeholder="whisper to the pack…" maxlength="200" style="flex:1;">
+      <button class="btn-red" id="wolfDenSend">Send</button>
+    </div>
+    <p style="color:#c4a3a8; font-size:12px; margin-top:8px;">Only wolves can read this. Bot wolves check the den too — suggest a target and they may agree (or argue!). Discuss who to hunt tonight, who to accuse tomorrow, and who's acting suspicious.</p>`;
+  const msgs = $w('wolfDenMsgs'); msgs.scrollTop = msgs.scrollHeight;
+  $w('wolfDenSwitch').onclick = () => { W.denUser = null; renderWolfDenBody(); };
+  const send = () => {
+    const inp = $w('wolfDenInput');
+    const text = inp.value.trim(); if (!text) return;
+    inp.value = '';
+    wolfChatSay(me.name, text);
+    wolfBotChatReply(text);
+  };
+  $w('wolfDenSend').onclick = send;
+  $w('wolfDenInput').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+  $w('wolfDenInput').focus();
+}
+function wolfBotChatReply(humanText) {
+  if (!W) return;
+  const gid = wolfGameId;
+  const botWolf = aliveW().find(p => p.isBot && p.role === 'wolf' && p.id !== (W ? W.denUser : null));
+  if (!botWolf) return;
+  const mentioned = aliveW().find(p => p.role !== 'wolf' && humanText.toLowerCase().includes(p.name.toLowerCase()));
+  const lines = mentioned
+    ? [`Good call. ${mentioned.name} won't see the dawn. 🌕`, `Agreed — ${mentioned.name} smells like dinner.`, `Yes. And tomorrow we act shocked when ${mentioned.name} is gone. 😈`]
+    : [`The moon looks tasty tonight. 🌕`, `Keep your head down tomorrow — let the villagers accuse each other.`, `I trust your nose, packmate.`, ` Careful — the Seer is still out there. We should find them fast.`];
+  setTimeout(() => { if (gid === wolfGameId && W) wolfChatSay(botWolf.name, lines[Math.floor(Math.random() * lines.length)]); }, 900 + Math.random() * 900);
+}
+function wolfPackTalkAtNight() {
+  if (!W) return;
+  const wolves = W.players.filter(p => p.role === 'wolf');
+  if (wolves.length < 2) return;
+  const botWolf = aliveW().find(p => p.isBot && p.role === 'wolf');
+  if (!botWolf) return;
+  const targets = aliveW().filter(p => p.role !== 'wolf');
+  if (!targets.length) return;
+  const t = targets[Math.floor(Math.random() * targets.length)];
+  const lines = [
+    `Pack, listen… I say we hunt ${t.name} tonight. 🌕`,
+    `My nose says ${t.name} — could be the Seer. Let's take them.`,
+    `${t.name} has been too quiet. Dinner?`,
+    `Tonight: ${t.name}. Tomorrow: we blend in and point fingers elsewhere.`,
+  ];
+  wolfChatSay(botWolf.name, lines[Math.floor(Math.random() * lines.length)]);
+}
+function renderVillage(extra) {
+  $w('wolfPlayers').innerHTML = W.players.map(p => `
+    <div style="background:rgba(255,255,255,${p.alive ? '.07' : '.02'}); border-radius:12px; padding:10px; text-align:center; ${p.alive ? '' : 'opacity:.45;'}">
+      <div style="font-size:26px;">${p.alive ? p.avatar : '⚰️'}</div>
+      <div style="font-weight:700; font-size:14px;">${esc(p.name)}${p.isBot ? ' 🤖' : ''}</div>
+      <div style="font-size:12px; color:${p.alive ? '#7ee2a0' : '#e28a8a'};">${p.alive ? 'Alive' : 'Dead' + (p.roleRevealed ? ' · ' + WOLF_ROLES[p.role].name : '')}</div>
+      ${(extra && extra[p.id]) || ''}
+    </div>`).join('');
+}
+function wolfButtons(list) {
+  const a = $w('wolfAction'); a.innerHTML = '';
+  list.forEach(({ label, cls, fn }) => { const b = document.createElement('button'); b.textContent = label; b.className = cls || 'btn-gold'; b.style.maxWidth = '460px'; b.style.width = '100%'; b.onclick = fn; a.appendChild(b); });
+}
+function targetButtons(players, fn, suggestId) {
+  const a = $w('wolfAction'); a.innerHTML = '';
+  players.forEach(p => {
+    const b = document.createElement('button');
+    b.textContent = `${p.avatar} ${p.name}${p.id === suggestId ? ' ⭐' : ''}`;
+    b.className = 'btn-ghost'; if (p.id === suggestId) b.classList.add('coach-pick');
+    b.style.maxWidth = '460px'; b.style.width = '100%';
+    b.onclick = () => fn(p);
+    a.appendChild(b);
+  });
+}
+const aliveW = () => W.players.filter(p => p.alive);
+const multiHumanW = () => W.players.filter(p => !p.isBot).length > 1;
+
+function startWerewolf(tutorial) {
+  wolfTutorial = !!tutorial; wolfGameId++;
+  let roster = [];
+  if (wolfForceAI) {
+    const total = parseInt($w('wolfTotalSelect').value) || 7;
+    roster = [{ name: 'You', isBot: false, avatar: '🧑' }];
+    for (let i = 0; roster.length < Math.max(5, total); i++) roster.push({ name: BOT_NAMES[i % BOT_NAMES.length], isBot: true, avatar: BOT_AVATARS[i % BOT_AVATARS.length] });
+  } else if (tutorial) {
+    roster = [
+      { name: 'You', isBot: false, avatar: '🧑' },
+      { name: 'Tutor Tess', isBot: true, avatar: '🎓' },
+      { name: 'Farmer Fred', isBot: true, avatar: '👨‍🌾' },
+      { name: 'Granny Gertrude', isBot: true, avatar: '👵' },
+      { name: 'Blacksmith Bob', isBot: true, avatar: '🔨' },
+      { name: 'Baker Betty', isBot: true, avatar: '🥖' },
+    ];
+  } else {
+    const total = parseInt($w('wolfTotalSelect').value) || 7;
+    const names = [...document.querySelectorAll('.wolf-name-input')].map(x => x.value.trim());
+    names.forEach((nm, i) => { if (nm) roster.push({ name: nm, isBot: false, avatar: HUMAN_AVATARS[i % HUMAN_AVATARS.length] }); });
+    let bi = 0;
+    const seatsTotal = Math.min(10, Math.max(5, total, roster.length));
+    while (roster.length < seatsTotal) { roster.push({ name: BOT_NAMES[bi % BOT_NAMES.length], isBot: true, avatar: BOT_AVATARS[bi % BOT_AVATARS.length] }); bi++; }
+    if (roster.length < 5) { alert('Werewolf needs at least 5 players — add names or raise the player count so bots can fill the village.'); return; }
+  }
+  // role deck
+  const n = roster.length;
+  const nWolves = tutorial ? 1 : (n >= 9 ? 3 : n >= 6 ? 2 : 1);
+  let roles = [];
+  for (let i = 0; i < nWolves; i++) roles.push('wolf');
+  roles.push('seer', 'doctor');
+  while (roles.length < n) roles.push('villager');
+  if (tutorial) {
+    // script the tutorial: You are the Seer, Tutor Tess is the Doctor, Farmer Fred is the wolf
+    roles = ['seer', 'doctor', 'wolf', 'villager', 'villager', 'villager'];
+  } else {
+    for (let i = roles.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [roles[i], roles[j]] = [roles[j], roles[i]]; }
+  }
+  W = {
+    players: roster.map((p, i) => ({ ...p, id: 'w' + i, role: roles[i], roleRevealed: false, alive: true })),
+    log: [], round: 1, night: null, votes: {}, seerKnowledge: {}, suspicion: {}, wolfChat: [], denUser: null,
+  };
+  $w('setupScreen').style.display = 'none';
+  $w('gameScreen').style.display = 'none';
+  $w('wolfScreen').style.display = 'block';
+  $w('wolfTitle').innerHTML = tutorial ? '🎓 <b>Werewolf Tutorial</b>' : '🐺 <b>Werewolf / Mafia</b>';
+  $w('wolfCoach').style.display = tutorial ? 'block' : 'none';
+  wolfLog(`🌕 Night falls on a village of ${n}… among them, ${nWolves} werewolf${nWolves > 1 ? 'ves lurk' : ' lurks'} in secret.`);
+  renderVillage(); renderWolfLog();
+  roleRevealStep(0);
+}
+
+function roleRevealStep(idx) {
+  const humans = W.players.filter(p => !p.isBot);
+  if (idx >= humans.length) return startNight();
+  const p = humans[idx];
+  $w('wolfPhase').textContent = '🤫 Secret role reveal';
+  $w('wolfMain').innerHTML = multiHumanW()
+    ? `Pass the device to <b>${esc(p.name)}</b>. Nobody else look!`
+    : `<b>${esc(p.name)}</b>, your secret role is ready. Make sure nobody can see your screen!`;
+  wolfCoach(`First, everyone secretly learns their role. When the device reaches you, tap the button to peek at <b>your</b> role only — then keep a poker face! Your role decides what you can do at night.`);
+  wolfButtons([{ label: `👀 I'm ${p.name} — reveal my role`, fn: () => {
+    $w('wolfMain').innerHTML = `<div style="font-size:44px;">${WOLF_ROLES[p.role].name.split(' ')[0]}</div>
+      <div style="font-size:24px; font-weight:800; margin:6px 0;">${esc(p.name)}, you are the ${WOLF_ROLES[p.role].name}</div>
+      <div>${WOLF_ROLES[p.role].desc}</div>
+      ${p.role === 'wolf' && W.players.filter(x => x.role === 'wolf' && x.id !== p.id).length ? `<div style="margin-top:8px;">Your fellow wolf: <b>${esc(W.players.filter(x => x.role === 'wolf' && x.id !== p.id).map(x => x.name).join(', '))}</b></div>` : ''}
+      ${p.role === 'wolf' ? `<div style="margin-top:8px;">🐺 You can scheme with your pack any time via the <b>Wolf Den</b> button (secret pack chat)!</div>` : ''}`;
+    if (wolfTutorial && !p.isBot) wolfCoach(`You've drawn the <b>${WOLF_ROLES[p.role].name}</b>! ${p.role === 'seer' ? 'Perfect for learning: every night you\'ll secretly investigate a player. In this tutorial, the coach knows the village — follow the ⭐ suggestions and you\'ll catch the wolf red-handed.' : WOLF_ROLES[p.role].desc}`);
+    wolfButtons([{ label: '🙈 Got it — hide & pass on', fn: () => roleRevealStep(idx + 1) }]);
+  }}]);
+  renderVillage();
+}
+
+function startNight() {
+  W.night = { wolfTarget: null, saved: null };
+  const gid = wolfGameId;
+  $w('wolfPhase').textContent = `🌙 Night ${W.round}`;
+  $w('wolfMain').innerHTML = 'The village sleeps… but some are awake. The device will be passed to each secret role in turn.';
+  wolfCoach(`🌙 <b>Night has fallen.</b> This is when the secret roles act: the wolves pick a victim, the Doctor picks someone to protect, and the Seer (that's you in this tutorial!) investigates a suspect. Follow the prompts — and keep your face blank!`);
+  wolfPackTalkAtNight();
+  renderVillage();
+  const queue = [];
+  const wolf = aliveW().find(p => p.role === 'wolf');
+  const doctor = aliveW().find(p => p.role === 'doctor');
+  const seer = aliveW().find(p => p.role === 'seer');
+  if (wolf) queue.push({ kind: 'wolf', actor: wolf });
+  if (doctor) queue.push({ kind: 'doctor', actor: doctor });
+  if (seer) queue.push({ kind: 'seer', actor: seer });
+  setTimeout(() => { if (gid === wolfGameId) nightStep(queue, 0); }, 900);
+}
+
+function nightStep(queue, idx) {
+  if (!W) return;
+  if (idx >= queue.length) return resolveNight();
+  const { kind, actor } = queue[idx];
+  const gid = wolfGameId;
+  const next = () => nightStep(queue, idx + 1);
+  if (actor.isBot) {
+    $w('wolfMain').innerHTML = `🌙 The village sleeps… <i>(${kind === 'wolf' ? 'something stirs in the dark' : kind === 'doctor' ? 'someone is making their rounds' : 'someone is watching closely'})</i>`;
+    $w('wolfAction').innerHTML = '';
+    setTimeout(() => { if (gid !== wolfGameId) return; botNightAction(kind, actor); next(); }, 1100);
+    return;
+  }
+  const titles = { wolf: '🐺 Wolves, awaken…', doctor: '💉 Doctor, awaken…', seer: '🔮 Seer, awaken…' };
+  const prompts = {
+    wolf: 'Choose the pack\'s victim for tonight:',
+    doctor: 'Choose someone to protect tonight (you may choose yourself):',
+    seer: 'Choose a player to investigate — you\'ll learn if they are a werewolf:',
+  };
+  const showAction = () => {
+    $w('wolfMain').innerHTML = `<b>${titles[kind]}</b><br>${prompts[kind]}`;
+    if (kind === 'wolf' && W && W.wolfChat.length) {
+      const recent = W.wolfChat.slice(-3).map(m => `<div><b>${esc(m.from)}:</b> ${esc(m.text)}</div>`).join('');
+      $w('wolfMain').innerHTML += `<div style="background:rgba(0,0,0,.35); border-radius:12px; padding:10px 12px; margin-top:12px; text-align:left;"><b>🐺 Latest pack talk:</b>${recent}<div style="color:#c4a3a8; font-size:12px; margin-top:6px;">(from the Wolf Den — tap the Wolf Den button any time to chat with your pack)</div></div>`;
+    }
+    if (wolfTutorial) {
+      if (kind === 'seer') wolfCoach(`🔮 <b>Your moment, Seer.</b> The coach has a hunch: investigate the player marked ⭐. Tap them and you'll secretly learn the truth about them. Remember it at voting time — but think about whether revealing yourself is wise…`);
+      else if (kind === 'wolf') wolfCoach(`🐺 You're hunting tonight. Pick a villager to eliminate — the ⭐ is a fine target.`);
+      else if (kind === 'doctor') wolfCoach(`💉 Protect someone tonight — yourself counts! The ⭐ marks a sensible choice.`);
+    }
+    let targets = kind === 'wolf' ? aliveW().filter(p => p.role !== 'wolf') : aliveW().filter(p => p.id !== actor.id || kind === 'doctor');
+    let suggestId = null;
+    if (wolfTutorial) {
+      if (kind === 'seer') { const w = aliveW().find(p => p.role === 'wolf'); suggestId = w ? w.id : null; }
+      else { const t = targets[Math.floor(Math.random() * targets.length)]; suggestId = t ? t.id : null; }
+    }
+    targetButtons(targets, chosen => {
+      if (kind === 'wolf') { W.night.wolfTarget = chosen.id; wolfButtons([{ label: '🌙 The pack has chosen… continue', fn: next }]); $w('wolfMain').innerHTML = `The pack's victim is marked. Wolves, close your eyes.`; }
+      else if (kind === 'doctor') { W.night.saved = chosen.id; wolfButtons([{ label: '🌙 Protected. Continue', fn: next }]); $w('wolfMain').innerHTML = `${esc(chosen.name)} is under your protection tonight.`; }
+      else {
+        W.seerKnowledge[actor.id] = W.seerKnowledge[actor.id] || {};
+        W.seerKnowledge[actor.id][chosen.id] = chosen.role === 'wolf';
+        const isWolf = chosen.role === 'wolf';
+        $w('wolfMain').innerHTML = `🔮 The spirits whisper: <b>${esc(chosen.name)}</b> is ${isWolf ? '<span style="color:#e28a8a;"><b>A WEREWOLF! 🐺</b></span>' : '<span style="color:#7ee2a0;"><b>not a werewolf.</b></span>'}<br><i>Remember this at voting time…</i>`;
+        if (wolfTutorial) wolfCoach(isWolf ? `🎯 <b>Caught them!</b> ${esc(chosen.name)} IS the werewolf. Tomorrow, vote for them — and convince the village! In this tutorial the village trusts your Seer's vision, so lead the vote.` : `Noted — ${esc(chosen.name)} is innocent. Keep that in mind when voting tomorrow.`);
+        wolfButtons([{ label: '🌙 I\'ll remember. Continue', fn: next }]);
+      }
+    }, suggestId);
+  };
+  $w('wolfMain').innerHTML = multiHumanW() ? `🌙 Pass the device to <b>${esc(actor.name)}</b> — and everyone else, eyes closed!` : `🌙 <b>${esc(actor.name)}</b>, the village is asleep. Your turn…`;
+  wolfButtons([{ label: `I'm ${actor.name} — I'm awake`, fn: showAction }]);
+}
+
+function botNightAction(kind, actor) {
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  if (kind === 'wolf') {
+    // smart wolves hunt the TRUSTED villagers (low suspicion) — they're the dangerous ones tomorrow
+    const prey = aliveW().filter(p => p.role !== 'wolf');
+    const minS = Math.min(...prey.map(p => W.suspicion[p.id] || 0));
+    const t = pick(prey.filter(p => (W.suspicion[p.id] || 0) <= minS + 1));
+    if (t) W.night.wolfTarget = t.id;
+  }
+  else if (kind === 'doctor') { // AI doctor: guards itself or a trusted villager the wolves would want dead
+    const all = aliveW();
+    const trusted = all.filter(p => (W.suspicion[p.id] || 0) <= 1);
+    const t = Math.random() < 0.35 ? actor : pick(trusted.length ? trusted : all);
+    if (t) W.night.saved = t.id;
+  }
+  else if (kind === 'seer') {
+    // smart seer investigates the MOST suspicious unknown player first
+    const known = W.seerKnowledge[actor.id] || {};
+    const unknown = aliveW().filter(p => p.id !== actor.id && !(p.id in known));
+    if (unknown.length) {
+      const maxS = Math.max(0, ...unknown.map(p => W.suspicion[p.id] || 0));
+      const t = pick(unknown.filter(p => (W.suspicion[p.id] || 0) === maxS));
+      W.seerKnowledge[actor.id] = known; W.seerKnowledge[actor.id][t.id] = t.role === 'wolf';
+    }
+  }
+}
+
+function resolveNight() {
+  const gid = wolfGameId;
+  const victim = W.players.find(p => p.id === W.night.wolfTarget);
+  let deathText;
+  if (victim && W.night.saved !== victim.id) {
+    victim.alive = false; victim.roleRevealed = true;
+    deathText = `☀️ Dawn breaks… and the village finds <b>${esc(victim.name)}</b> — a ${WOLF_ROLES[victim.role].name} — eliminated by werewolves in the night!`;
+    wolfLog(`☀️ Day ${W.round}: ${victim.name} (${WOLF_ROLES[victim.role].name}) was killed by the wolves.`);
+  } else {
+    deathText = `☀️ Dawn breaks… and <b>nobody died!</b> ${victim ? 'The Doctor\'s protection saved a life (or the wolves changed their minds…).' : ''}`;
+    wolfLog(`☀️ Day ${W.round}: nobody died in the night.`);
+  }
+  $w('wolfPhase').textContent = `☀️ Day ${W.round}`;
+  $w('wolfMain').innerHTML = deathText;
+  renderVillage();
+  if (checkWolfWin()) return;
+  wolfCoach(`☀️ <b>Morning.</b> Read what happened in the night. ${victim && !victim.alive ? `Losing a ${WOLF_ROLES[victim.role].name} hurts — if that was a special role, the village is weaker now.` : 'A saved life — the Doctor is out there doing great work!'} Next: talk it over, then everyone votes to eliminate a suspect.`);
+  const morningBot = aliveW().find(p => p.isBot);
+  if (morningBot && Math.random() < 0.8) {
+    const line = victim && !victim.alive
+      ? pickLine([`${victim.name}?! The wolves are among us — I barely slept a wink.`, `Poor ${victim.name}… someone here is howling inside.`, `Another one gone. We must find them TODAY.`, `I heard scratching at my door last night. Terrifying.`])
+      : pickLine(['Nobody died? The Doctor deserves a medal!', 'A quiet night… too quiet.', 'We survived the night. Someone is protecting us.']);
+    wolfLog(`💬 ${morningBot.name}: "${line}"`);
+    aiTalk(morningBot.name, morningBot.avatar, line);
+  }
+  wolfButtons([{ label: '🗳️ Discuss & vote', fn: () => setTimeout(() => { if (gid === wolfGameId) startVoting(); }, 400) }]);
+}
+
+function startVoting() {
+  W.votes = {};
+  $w('wolfPhase').textContent = `🗳️ Day ${W.round} — the vote`;
+  $w('wolfMain').innerHTML = 'The village debates… now everyone points a finger. Who is secretly a werewolf? The device passes to each living player to vote.';
+  wolfCoach(`🗳️ <b>Voting time.</b> Everyone alive votes for one player to eliminate. Majority rules — ties mean nobody goes. ${wolfTutorial ? 'You\'re the Seer: vote for the player you investigated (⭐), and in this tutorial the village will follow your lead.' : 'Vote with your gut and your logic!'}`);
+  renderVillage();
+  voteStep(aliveW(), 0);
+}
+
+function voteStep(voters, idx) {
+  if (!W) return;
+  if (idx >= voters.length) return resolveVote();
+  const voter = voters[idx];
+  if (!voter.alive) return voteStep(voters, idx + 1);
+  const gid = wolfGameId;
+  const next = () => voteStep(voters, idx + 1);
+  if (voter.isBot) {
+    $w('wolfMain').innerHTML = `🗳️ <b>${esc(voter.name)}</b> is casting their vote…`;
+    $w('wolfAction').innerHTML = '';
+    setTimeout(() => { if (gid !== wolfGameId) return; const targetId = botVoteFor(voter); W.votes[voter.id] = targetId;
+      if (Math.random() < 0.5) { const t = W.players.find(p => p.id === targetId); const line = pickLine([`I vote ${t.name}. Something about them isn't right.`, `${t.name}. Too quiet. Too shifty. I can feel it.`, `My gut says ${t.name}. The village must act!`, `I accuse ${t.name}! Who's with me?`]); wolfLog(`💬 ${voter.name}: "${line}"`); aiTalk(voter.name, voter.avatar, line); }
+      next(); }, 800);
+    return;
+  }
+  const showVote = () => {
+    $w('wolfMain').innerHTML = `🗳️ <b>${esc(voter.name)}</b>, who do you accuse? Tap a player to vote them out:`;
+    let suggestId = null;
+    if (wolfTutorial) { const w = aliveW().find(p => p.role === 'wolf'); suggestId = w ? w.id : null; }
+    targetButtons(aliveW().filter(p => p.id !== voter.id), chosen => { W.votes[voter.id] = chosen.id; next(); }, suggestId);
+  };
+  $w('wolfMain').innerHTML = multiHumanW() ? `🗳️ Pass the device to <b>${esc(voter.name)}</b> to vote in secret.` : `🗳️ <b>${esc(voter.name)}</b>, cast your vote:`;
+  wolfButtons([{ label: `I'm ${voter.name} — vote`, fn: showVote }]);
+}
+
+function botVoteFor(voter) {
+  const others = aliveW().filter(p => p.id !== voter.id);
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  if (wolfTutorial) { // village follows the Seer's lead in the tutorial
+    const wolfP = others.find(p => p.role === 'wolf');
+    if (voter.role !== 'wolf' && wolfP) return wolfP.id;
+  }
+  if (voter.role === 'wolf') {
+    // wolves pile onto whoever the village already distrusts, to blend in with the crowd
+    const nonWolves = others.filter(p => p.role !== 'wolf');
+    const maxS = Math.max(0, ...nonWolves.map(p => W.suspicion[p.id] || 0));
+    const t = maxS > 0 ? pick(nonWolves.filter(p => (W.suspicion[p.id] || 0) === maxS)) : pick(nonWolves);
+    return t ? t.id : pick(others).id;
+  }
+  const known = W.seerKnowledge[voter.id] || {};
+  const knownWolf = others.find(p => known[p.id]);
+  if (voter.role === 'seer' && knownWolf) return knownWolf.id;
+  // AI villagers reason: skip players the seer cleared (if they are seer), then accuse whoever
+  // has piled up the most suspicion (e.g. voted to execute an innocent yesterday)
+  const suspects = others.filter(p => known[p.id] !== false);
+  const pool = suspects.length ? suspects : others;
+  const maxS = Math.max(0, ...pool.map(p => W.suspicion[p.id] || 0));
+  if (maxS > 0 && Math.random() < 0.8) return pick(pool.filter(p => (W.suspicion[p.id] || 0) === maxS)).id;
+  return pick(pool).id;
+}
+
+function resolveVote() {
+  const tally = {};
+  Object.values(W.votes).forEach(id => tally[id] = (tally[id] || 0) + 1);
+  const entries = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+  const summary = entries.map(([id, n]) => `${esc(W.players.find(p => p.id === id).name)}: ${n}`).join(' · ');
+  let resultHtml;
+  if (entries.length && (entries.length === 1 || entries[0][1] > entries[1][1])) {
+    const out = W.players.find(p => p.id === entries[0][0]);
+    // AI memory: players who helped execute an innocent look suspicious tomorrow; wolf-killers look trustworthy
+    Object.entries(W.votes).forEach(([voterId, targetId]) => {
+      if (targetId !== out.id || voterId === out.id) return;
+      if (out.role === 'wolf') W.suspicion[voterId] = Math.max(0, (W.suspicion[voterId] || 0) - 1);
+      else W.suspicion[voterId] = (W.suspicion[voterId] || 0) + 2;
+    });
+    out.alive = false; out.roleRevealed = true;
+    resultHtml = `⚖️ The village has spoken (${summary}).<br><b>${esc(out.name)}</b> is eliminated… and was a <b>${WOLF_ROLES[out.role].name}</b>!`;
+    wolfLog(`⚖️ Day ${W.round} vote (${summary}) — ${out.name} eliminated, was ${WOLF_ROLES[out.role].name}.`);
+  } else {
+    resultHtml = `⚖️ The vote is tied (${summary})! Nobody is eliminated today — the wolves are smiling somewhere…`;
+    wolfLog(`⚖️ Day ${W.round} vote tied (${summary}) — nobody eliminated.`);
+  }
+  $w('wolfPhase').textContent = `⚖️ Day ${W.round} — result`;
+  $w('wolfMain').innerHTML = resultHtml;
+  renderVillage();
+  if (checkWolfWin()) return;
+  wolfCoach(`⚖️ The vote is done. Notice who voted for whom — wolves protect each other and jump on bandwagons against innocents. Night falls again…`);
+  W.round++;
+  wolfButtons([{ label: '🌙 Night falls…', fn: startNight }]);
+}
+
+function checkWolfWin() {
+  const wolves = aliveW().filter(p => p.role === 'wolf').length;
+  const others = aliveW().length - wolves;
+  let winner = null;
+  if (wolves === 0) winner = 'villagers';
+  else if (wolves >= others) winner = 'wolves';
+  if (!winner) return false;
+  const gid = wolfGameId;
+  $w('wolfPhase').textContent = winner === 'villagers' ? '🎉 THE VILLAGE WINS!' : '🐺 THE WEREWOLVES WIN!';
+  $w('wolfMain').innerHTML = winner === 'villagers'
+    ? 'Every werewolf has been eliminated. The village can sleep in peace at last! ☀️'
+    : 'The werewolves now equal the villagers — the village is theirs by nightfall! 🌕';
+  W.players.forEach(p => p.roleRevealed = !p.alive || true);
+  renderVillage();
+  $w('wolfPlayers').innerHTML = W.players.map(p => `
+    <div style="background:rgba(255,255,255,.07); border-radius:12px; padding:10px; text-align:center; ${p.alive ? '' : 'opacity:.55;'}">
+      <div style="font-size:26px;">${p.alive ? p.avatar : '⚰️'}</div>
+      <div style="font-weight:700; font-size:14px;">${esc(p.name)}</div>
+      <div style="font-size:12px;">${WOLF_ROLES[p.role].name}${p.alive ? ' · survived' : ' · eliminated'}</div>
+    </div>`).join('');
+  wolfLog(winner === 'villagers' ? '🎉 Village wins!' : '🐺 Werewolves win!');
+  if (wolfTutorial) wolfCoach(winner === 'villagers' ? `🎉 <b>And that's Werewolf!</b> Roles → night actions → morning news → debate & vote → repeat until one side wipes out the other. You caught the wolf with your Seer powers like a pro. Play a real game from the home screen — add friends' names and let the accusations fly!` : `🐺 The wolves took that one — it happens to the best villages! That's the full loop though: roles → night → morning → vote. Try the tutorial again, or jump into a real game.`);
+  wolfButtons([
+    { label: '🔁 Play again', fn: () => startWerewolf(wolfTutorial) },
+    { label: '🏠 Back to games', cls: 'btn-green', fn: exitWerewolf },
+  ]);
+  return true;
+}
+
+function exitWerewolf() {
+  wolfGameId++; W = null; wolfTutorial = false;
+  $w('wolfScreen').style.display = 'none';
+  $w('setupScreen').style.display = 'block';
+}
+$w('wolfDenBtn').onclick = () => {
+  const den = $w('wolfDen');
+  const opening = den.style.display === 'none';
+  den.style.display = opening ? 'block' : 'none';
+  if (opening) renderWolfDenBody();
+};
+$w('wolfStartBtn').onclick = () => { wolfForceAI = false; startWerewolf(false); wolfForceAI = false; };
+$w('wolfAiBtn').onclick = () => { wolfForceAI = true; startWerewolf(false); wolfForceAI = false; };
+$w('wolfTutBtn').onclick = () => startWerewolf(true);
+$w('wolfExitBtn').onclick = exitWerewolf;
+</script>
+<script>
+'use strict';
+/* ================= CHESS ================= */
+const $c = id => document.getElementById(id);
+const CH_GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+const CH_NAME = { k:'King', q:'Queen', r:'Rook', b:'Bishop', n:'Knight', p:'Pawn' };
+const CH_VAL = { p:100, n:320, b:330, r:500, q:900, k:100000 };
+let chessGameId = 0, chessTutorial = false, CH = null, RO = null, activeChess = 'standard';
+
+function chessLog(msg) {
+  const arr = activeChess === 'standard' ? CH.log : RO.log;
+  arr.push(msg); if (arr.length > 60) arr.shift();
+  $c('chessLog').innerHTML = arr.map(l => `<li>${l}</li>`).join('');
+  $c('chessLog').scrollTop = $c('chessLog').scrollHeight;
+}
+const chSqName = (r, c) => 'abcdefgh'[c] + (8 - r);
+const inBd = (r, c, n) => r >= 0 && r < n && c >= 0 && c < n;
+
+/* ---------- standard chess ---------- */
+function chNewBoard() {
+  const back = ['r','n','b','q','k','b','n','r'];
+  const bd = Array.from({ length: 8 }, () => Array(8).fill(null));
+  for (let c = 0; c < 8; c++) {
+    bd[0][c] = { t: back[c], c: 'b' }; bd[1][c] = { t: 'p', c: 'b' };
+    bd[6][c] = { t: 'p', c: 'w' }; bd[7][c] = { t: back[c], c: 'w' };
+  }
+  return bd;
+}
+function chCloneBd(bd) { return bd.map(row => row.map(p => p ? { ...p } : null)); }
+function chIsAttacked(bd, tr, tc, by) {
+  const pdir = by === 'w' ? -1 : 1;
+  // pawns: an attacking pawn sits one row behind its march direction
+  for (const dc of [-1, 1]) { const r = tr - pdir, c = tc + dc; if (inBd(r, c, 8)) { const p = bd[r][c]; if (p && p.c === by && p.t === 'p') return true; } }
+  for (const [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) { const r = tr + dr, c = tc + dc; if (inBd(r, c, 8)) { const p = bd[r][c]; if (p && p.c === by && p.t === 'n') return true; } }
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { if (!dr && !dc) continue; const r = tr + dr, c = tc + dc; if (inBd(r, c, 8)) { const p = bd[r][c]; if (p && p.c === by && p.t === 'k') return true; } }
+  const slide = (dirs, types) => { for (const [dr, dc] of dirs) { let r = tr + dr, c = tc + dc; while (inBd(r, c, 8)) { const p = bd[r][c]; if (p) { if (p.c === by && types.includes(p.t)) return true; break; } r += dr; c += dc; } } return false; };
+  if (slide([[1,1],[1,-1],[-1,1],[-1,-1]], ['b','q'])) return true;
+  if (slide([[1,0],[-1,0],[0,1],[0,-1]], ['r','q'])) return true;
+  return false;
+}
+function chKingPos(bd, color) { for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const p = bd[r][c]; if (p && p.t === 'k' && p.c === color) return [r, c]; } return null; }
+function chPseudo(bd, r, c, ep, castling) {
+  const p = bd[r][c]; if (!p) return [];
+  const moves = [], enemy = p.c === 'w' ? 'b' : 'w';
+  const add = (tr, tc, extra = {}) => { if (inBd(tr, tc, 8)) { const t = bd[tr][tc]; if (!t || t.c === enemy) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: t ? t.t : null, ...extra }); } };
+  if (p.t === 'p') {
+    const dir = p.c === 'w' ? -1 : 1, start = p.c === 'w' ? 6 : 1, promoRow = p.c === 'w' ? 0 : 7;
+    if (inBd(r + dir, c, 8) && !bd[r + dir][c]) {
+      moves.push({ fr: r, fc: c, tr: r + dir, tc: c, piece: 'p', capture: null, promo: r + dir === promoRow });
+      if (r === start && !bd[r + 2 * dir][c]) moves.push({ fr: r, fc: c, tr: r + 2 * dir, tc: c, piece: 'p', capture: null, double: true });
+    }
+    for (const dc of [-1, 1]) {
+      const tr = r + dir, tc = c + dc;
+      if (!inBd(tr, tc, 8)) continue;
+      const t = bd[tr][tc];
+      if (t && t.c === enemy) moves.push({ fr: r, fc: c, tr, tc, piece: 'p', capture: t.t, promo: tr === promoRow });
+      else if (!t && ep && ep[0] === tr && ep[1] === tc) moves.push({ fr: r, fc: c, tr, tc, piece: 'p', capture: 'p', epCapture: true });
+    }
+  } else if (p.t === 'n' || p.t === 'k') {
+    const offs = p.t === 'n' ? [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]] : [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+    offs.forEach(([dr, dc]) => add(r + dr, c + dc));
+    if (p.t === 'k' && castling) {
+      const home = p.c === 'w' ? 7 : 0, rights = p.c === 'w' ? ['K','Q'] : ['k','q'];
+      if (r === home && c === 4 && !chIsAttacked(bd, home, 4, enemy)) {
+        if (castling[rights[0]] && !bd[home][5] && !bd[home][6] && bd[home][7] && bd[home][7].t === 'r' && bd[home][7].c === p.c
+          && !chIsAttacked(bd, home, 5, enemy) && !chIsAttacked(bd, home, 6, enemy)) moves.push({ fr: r, fc: c, tr: home, tc: 6, piece: 'k', capture: null, castle: 'K' });
+        if (castling[rights[1]] && !bd[home][3] && !bd[home][2] && !bd[home][1] && bd[home][0] && bd[home][0].t === 'r' && bd[home][0].c === p.c
+          && !chIsAttacked(bd, home, 3, enemy) && !chIsAttacked(bd, home, 2, enemy)) moves.push({ fr: r, fc: c, tr: home, tc: 2, piece: 'k', capture: null, castle: 'Q' });
+      }
+    }
+  } else {
+    const dirs = p.t === 'b' ? [[1,1],[1,-1],[-1,1],[-1,-1]] : p.t === 'r' ? [[1,0],[-1,0],[0,1],[0,-1]] : [[1,1],[1,-1],[-1,1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+    for (const [dr, dc] of dirs) { let tr = r + dr, tc = c + dc; while (inBd(tr, tc, 8)) { const t = bd[tr][tc]; if (!t) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: null }); else { if (t.c === enemy) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: t.t }); break; } tr += dr; tc += dc; } }
+  }
+  return moves;
+}
+function chApplyToState(st, m) {
+  const bd = chCloneBd(st.bd);
+  const castling = { ...st.castling };
+  const piece = bd[m.fr][m.fc];
+  if (m.epCapture) bd[m.fr][m.tc] = null;
+  bd[m.tr][m.tc] = m.promo ? { t: m.promoPiece || 'q', c: piece.c } : piece;
+  bd[m.fr][m.fc] = null;
+  if (m.castle === 'K') { bd[m.tr][5] = bd[m.tr][7]; bd[m.tr][7] = null; }
+  if (m.castle === 'Q') { bd[m.tr][3] = bd[m.tr][0]; bd[m.tr][0] = null; }
+  if (piece.t === 'k') { if (piece.c === 'w') { castling.K = castling.Q = false; } else { castling.k = castling.q = false; } }
+  const corner = (r, c, key) => { if ((m.fr === r && m.fc === c) || (m.tr === r && m.tc === c)) castling[key] = false; };
+  corner(7, 0, 'Q'); corner(7, 7, 'K'); corner(0, 0, 'q'); corner(0, 7, 'k');
+  return { bd, castling, ep: m.double ? [(m.fr + m.tr) / 2, m.fc] : null };
+}
+function chLegal(st, color) {
+  const out = [];
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+    const p = st.bd[r][c]; if (!p || p.c !== color) continue;
+    for (const m of chPseudo(st.bd, r, c, st.ep, st.castling)) {
+      const ns = chApplyToState(st, m);
+      const kp = chKingPos(ns.bd, color);
+      if (kp && !chIsAttacked(ns.bd, kp[0], kp[1], color === 'w' ? 'b' : 'w')) out.push(m);
+    }
+  }
+  return out;
+}
+// Piece-square tables (from White's perspective, a1 = bottom-left in array order below)
+const CH_PST = {
+  p: [0,0,0,0,0,0,0,0, 50,50,50,50,50,50,50,50, 10,10,20,30,30,20,10,10, 5,5,10,25,25,10,5,5, 0,0,0,20,20,0,0,0, 5,-5,-10,0,0,-10,-5,5, 5,10,10,-20,-20,10,10,5, 0,0,0,0,0,0,0,0],
+  n: [-50,-40,-30,-30,-30,-30,-40,-50, -40,-20,0,0,0,0,-20,-40, -30,0,10,15,15,10,0,-30, -30,5,15,20,20,15,5,-30, -30,0,15,20,20,15,0,-30, -30,5,10,15,15,10,5,-30, -40,-20,0,5,5,0,-20,-40, -50,-40,-30,-30,-30,-30,-40,-50],
+  b: [-20,-10,-10,-10,-10,-10,-10,-20, -10,0,0,0,0,0,0,-10, -10,0,5,10,10,5,0,-10, -10,3,5,10,10,5,3,-10, -10,0,10,10,10,10,0,-10, -10,10,10,10,10,10,10,-10, -10,5,0,0,0,0,5,-10, -20,-10,-10,-10,-10,-10,-10,-20],
+  r: [0,0,0,0,0,0,0,0, 5,10,10,10,10,10,10,5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, -5,0,0,0,0,0,0,-5, 0,0,0,5,5,0,0,0],
+  q: [-20,-10,-10,-5,-5,-10,-10,-20, -10,0,0,0,0,0,0,-10, -10,0,5,5,5,5,0,-10, -5,0,5,5,5,5,0,-5, 0,0,5,5,5,5,0,-5, -10,5,5,5,5,5,0,-10, -10,0,5,0,0,0,0,-10, -20,-10,-10,-5,-5,-10,-10,-20],
+  k: [-30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -30,-40,-40,-50,-50,-40,-40,-30, -20,-30,-30,-40,-40,-30,-30,-20, -10,-20,-20,-20,-20,-20,-20,-10, 20,20,0,0,0,0,20,20, 20,30,10,0,0,10,30,20],
+};
+const CH_PST_K_END = [-50,-30,-30,-30,-30,-30,-30,-50, -30,-10,0,0,0,0,-10,-30, -30,0,20,25,25,20,0,-30, -30,0,25,30,30,25,0,-30, -30,0,25,30,30,25,0,-30, -30,0,20,25,25,20,0,-30, -30,-10,0,0,0,0,-10,-30, -50,-30,-30,-30,-30,-30,-30,-50];
+function chEvaluate(bd) {
+  let s = 0;
+  const bishops = { w: 0, b: 0 }, pawnFiles = { w: {}, b: {} }, pieces = [];
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const p = bd[r][c]; if (p) pieces.push([p, r, c]); }
+  const material = pieces.reduce((a, [p]) => a + (p.t === 'k' ? 0 : CH_VAL[p.t]), 0);
+  const endgame = material <= 2600;
+  for (const [p, r, c] of pieces) {
+    const idx = p.c === 'w' ? r * 8 + c : (7 - r) * 8 + c;
+    const table = p.t === 'k' && endgame ? CH_PST_K_END : CH_PST[p.t];
+    let v = CH_VAL[p.t] + (table[idx] || 0);
+    if (p.t === 'b') bishops[p.c]++;
+    if (p.t === 'p') pawnFiles[p.c][c] = (pawnFiles[p.c][c] || 0) + 1;
+    s += p.c === 'w' ? v : -v;
+  }
+  if (bishops.w >= 2) s += 30; if (bishops.b >= 2) s -= 30;           // bishop pair
+  for (const col of ['w', 'b']) for (const n of Object.values(pawnFiles[col])) if (n > 1) s += (col === 'w' ? -12 : 12) * (n - 1); // doubled pawns
+  // passed pawns become monsters as they advance; rooks love open files
+  const pawnsOf = col => pieces.filter(([p]) => p.t === 'p' && p.c === col).map(([, r, c]) => [r, c]);
+  for (const col of ['w', 'b']) {
+    const mine = pawnsOf(col), theirs = pawnsOf(col === 'w' ? 'b' : 'w');
+    const sign = col === 'w' ? 1 : -1;
+    for (const [r, c] of mine) {
+      const ahead = theirs.every(([tr, tc]) => Math.abs(tc - c) > 1 || (col === 'w' ? tr >= r : tr <= r));
+      if (ahead) s += sign * (col === 'w' ? 6 - r : r - 1) * 12;
+    }
+    for (const [p, r, c] of pieces.filter(([q]) => q.t === 'r' && q.c === col)) {
+      const filePawns = pieces.filter(([q, qr, qc]) => q.t === 'p' && qc === c);
+      if (!filePawns.length) s += sign * 18; else if (filePawns.every(([q]) => q.c !== col)) s += sign * 9;
+    }
+  }
+  return s;
+}
+function chOrderMoves(moves) {
+  return moves.sort((a, b) => ((CH_VAL[b.capture] || 0) - (CH_VAL[a.capture] || 0) / 10 + (b.promo ? 900 : 0)) - ((CH_VAL[a.capture] || 0) - (CH_VAL[b.capture] || 0) / 10 + (a.promo ? 900 : 0)));
+}
+function chQuiesce(st, color, alpha, beta, ply) {
+  const sign = color === 'w' ? 1 : -1;
+  const stand = sign * chEvaluate(st.bd);
+  const kp = chKingPos(st.bd, color);
+  const inCheck = kp && chIsAttacked(st.bd, kp[0], kp[1], color === 'w' ? 'b' : 'w');
+  if (ply >= 5 && !inCheck) return stand;
+  const moves = chLegal(st, color);
+  if (!moves.length) return inCheck ? -100000 + ply : 0;
+  if (!inCheck) {
+    if (stand >= beta) return beta;
+    if (stand > alpha) alpha = stand;
+  }
+  const next = color === 'w' ? 'b' : 'w';
+  const tactical = chOrderMoves(moves.filter(m => inCheck || m.capture || m.promo));
+  for (const m of tactical) {
+    const score = -chQuiesce(chApplyToState(st, m), next, -beta, -alpha, ply + 1);
+    if (score >= beta) return beta;
+    if (score > alpha) alpha = score;
+  }
+  return alpha;
+}
+function chNegamax(st, color, depth, alpha, beta, ply) {
+  if (depth === 0) return chQuiesce(st, color, alpha, beta, ply);
+  const moves = chLegal(st, color);
+  if (!moves.length) {
+    const kp = chKingPos(st.bd, color);
+    const inCheck = kp && chIsAttacked(st.bd, kp[0], kp[1], color === 'w' ? 'b' : 'w');
+    return inCheck ? -100000 + ply : 0;
+  }
+  const next = color === 'w' ? 'b' : 'w';
+  let best = -Infinity;
+  for (const m of chOrderMoves(moves)) {
+    const score = -chNegamax(chApplyToState(st, m), next, depth - 1, -beta, -alpha, ply + 1);
+    if (score > best) best = score;
+    if (best > alpha) alpha = best;
+    if (alpha >= beta) break;
+  }
+  return best;
+}
+function chBestMove(color, depth = 3) {
+  const st = { bd: CH.board, ep: CH.ep, castling: CH.castling };
+  const moves = chLegal(st, color);
+  if (!moves.length) return null;
+  // IQ-113 mode: think deeper as the board empties (endgames calculated furthest)
+  const totalPieces = CH.board.flat().filter(Boolean).length;
+  let effDepth = Math.max(depth, 3);
+  if (totalPieces <= 10) effDepth = Math.max(effDepth, 5);
+  else if (totalPieces <= 18) effDepth = Math.max(effDepth, 4);
+  let best = null, bestScore = -Infinity;
+  for (const m of chOrderMoves(moves)) {
+    // every candidate is a fully legal move — the AI can never move into or stay in check
+    const sc = -chNegamax(chApplyToState(st, m), color === 'w' ? 'b' : 'w', effDepth - 1, -Infinity, Infinity, 1);
+    if (sc > bestScore + 1) { bestScore = sc; best = m; }
+  }
+  return best;
+}
+
+/* ---------- Chess Royale (3-5 players) ---------- */
+const RO_COLORS = [
+  { label: 'White', hex: '#ffffff', dir: [-1, 0] },
+  { label: 'Red', hex: '#ff5964', dir: [0, 1] },
+  { label: 'Black', hex: '#26221f', dir: [1, 0] },
+  { label: 'Blue', hex: '#55aaff', dir: [0, -1] },
+  { label: 'Gold', hex: '#ffd94d', dir: [-1, 0] },
+];
+function roPseudo(bd, r, c) {
+  const p = bd[r][c]; if (!p) return [];
+  const moves = [], N = 14;
+  const hostile = (tr, tc) => { const t = bd[tr][tc]; return t && t.owner !== p.owner; };
+  if (p.t === 'p') {
+    const [dr, dc] = RO.players[p.owner].dir;
+    const sr = -dc, sc = dr; // sideways
+    const oneR = r + dr, oneC = c + dc;
+    if (inBd(oneR, oneC, N) && !bd[oneR][oneC]) {
+      moves.push({ fr: r, fc: c, tr: oneR, tc: oneC, piece: 'p', capture: null, promo: oneR === 0 || oneR === 13 || oneC === 0 || oneC === 13 });
+      const twoR = r + 2 * dr, twoC = c + 2 * dc;
+      if (!p.moved && inBd(twoR, twoC, N) && !bd[twoR][twoC]) moves.push({ fr: r, fc: c, tr: twoR, tc: twoC, piece: 'p', capture: null });
+    }
+    for (const s of [1, -1]) {
+      const tr = r + dr + sr * s, tc = c + dc + sc * s;
+      if (inBd(tr, tc, N) && hostile(tr, tc)) moves.push({ fr: r, fc: c, tr, tc, piece: 'p', capture: bd[tr][tc].t, promo: tr === 0 || tr === 13 || tc === 0 || tc === 13 });
+    }
+  } else if (p.t === 'n' || p.t === 'k') {
+    const offs = p.t === 'n' ? [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]] : [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+    for (const [dr, dc] of offs) { const tr = r + dr, tc = c + dc; if (inBd(tr, tc, N) && (!bd[tr][tc] || hostile(tr, tc))) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: bd[tr][tc] ? bd[tr][tc].t : null }); }
+  } else {
+    const dirs = p.t === 'b' ? [[1,1],[1,-1],[-1,1],[-1,-1]] : p.t === 'r' ? [[1,0],[-1,0],[0,1],[0,-1]] : [[1,1],[1,-1],[-1,1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+    for (const [dr, dc] of dirs) { let tr = r + dr, tc = c + dc; while (inBd(tr, tc, N)) { const t = bd[tr][tc]; if (!t) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: null }); else { if (hostile(tr, tc)) moves.push({ fr: r, fc: c, tr, tc, piece: p.t, capture: t.t }); break; } tr += dr; tc += dc; } }
+  }
+  return moves;
+}
+
+/* ---------- shared UI ---------- */
+function exitChess() {
+  chessGameId++; CH = null; RO = null; chessTutorial = false;
+  $c('chessScreen').style.display = 'none';
+  $c('setupScreen').style.display = 'block';
+}
+$c('chessExitBtn').onclick = exitChess;
+$c('variantSelect') && 0; // no-op keep order
+$c('chessVariantSelect').onchange = e => {
+  const v = e.target.value;
+  $c('chessHint').innerHTML = v === 'standard'
+    ? '♔ <b>Standard:</b> full chess rules — castling, en passant, promotion, check &amp; checkmate. Pick 2 humans above for pass-and-play, or 1 to face the AI.'
+    : `👑 <b>Chess Royale (${v.slice(-1)} players):</b> free-for-all on a giant 14×14 board! Everyone starts with a full army on their edge (5th player starts in the centre fortress). Capture a king to knock that player out — last king standing wins. Kings can be captured here, so guard yours!`;
+};
+
+function startChess(tutorial) {
+  chessTutorial = !!tutorial; chessGameId++;
+  const variant = tutorial ? 'standard' : $c('chessVariantSelect').value;
+  let humans = tutorial ? 1 : parseInt($c('chessHumansSelect').value) || 1;
+  $c('setupScreen').style.display = 'none';
+  $c('gameScreen').style.display = 'none';
+  $c('wolfScreen').style.display = 'none';
+  $c('chessScreen').style.display = 'block';
+  $c('chessCoach').style.display = tutorial ? 'block' : 'none';
+  if (variant === 'standard') {
+    activeChess = 'standard'; RO = null;
+    CH = {
+      board: chNewBoard(), turn: 'w', castling: { K: true, Q: true, k: true, q: true }, ep: null,
+      selected: null, legalSel: [], lastMove: null, gameOver: false, pendingPromo: null, log: [],
+      humans, inCheck: false, result: '',
+      players: {
+        w: { name: humans >= 1 ? (humans === 1 ? 'You (White)' : 'Player 1 (White)') : 'AI (White)', isBot: humans < 1 },
+        b: { name: humans >= 2 ? 'Player 2 (Black)' : 'AI (Black)', isBot: humans < 2 },
+      },
+    };
+    CH.players.w.isBot = false;
+    $c('chessTitle').innerHTML = tutorial ? '🎓 <b>Chess Tutorial</b>' : '♟️ <b>Standard Chess</b>';
+    chessLog(tutorial ? '🎓 Tutorial game started — you are White. The coach suggests a glowing move each turn.' : '♟️ New game. White to move. The AI plays at IQ 113 level.');
+    renderChess();
+    chessMaybeAI();
+  } else {
+    const count = parseInt(variant.slice(-1));
+    humans = Math.min(humans, count);
+    activeChess = 'royale'; CH = null;
+    const bd = Array.from({ length: 14 }, () => Array(14).fill(null));
+    const backOrder = ['r','n','b','q','k','b','n','r'];
+    const place = (owner, cells, pawnCells) => {
+      cells.forEach(([r, c], i) => bd[r][c] = { t: backOrder[i], owner, moved: false });
+      pawnCells.forEach(([r, c]) => bd[r][c] = { t: 'p', owner, moved: false });
+    };
+    // bottom (White) and top (Black)
+    place(0, backOrder.map((_, i) => [13, 3 + i]), backOrder.map((_, i) => [12, 3 + i]));
+    place(2, backOrder.map((_, i) => [0, 3 + i]), backOrder.map((_, i) => [1, 3 + i]));
+    // left (Red) and right (Blue)
+    if (count >= 3) place(1, backOrder.map((_, i) => [3 + i, 0]), backOrder.map((_, i) => [3 + i, 1]));
+    if (count >= 4) place(3, backOrder.map((_, i) => [3 + i, 13]), backOrder.map((_, i) => [3 + i, 12]));
+    // centre fortress (Gold, 5th player)
+    if (count >= 5) place(4, backOrder.map((_, i) => [7, 3 + i]), backOrder.map((_, i) => [6, 3 + i]));
+    RO = {
+      board: bd, turn: 0, selected: null, legalSel: [], lastMove: null, gameOver: false, log: [], passStreak: 0,
+      players: RO_COLORS.slice(0, count).map((col, i) => ({
+        ...col, alive: true,
+        name: i < humans ? (count > 2 && humans === 1 && i === 0 ? `You (${col.label})` : `Player ${i + 1} (${col.label})`) : `AI (${col.label})`,
+        isBot: i >= humans,
+      })),
+    };
+    // re-map dirs per owner index as placed: 0 bottom, 2 top, 1 left, 3 right, 4 centre
+    RO.players[0].dir = [-1, 0]; if (RO.players[2]) RO.players[2].dir = [1, 0];
+    if (RO.players[1]) RO.players[1].dir = [0, 1]; if (RO.players[3]) RO.players[3].dir = [0, -1];
+    if (RO.players[4]) RO.players[4].dir = [-1, 0];
+    $c('chessTitle').innerHTML = `👑 <b>Chess Royale — ${count} players</b>`;
+    chessLog(`👑 Chess Royale with ${count} armies! Capture kings to eliminate players — last king standing wins.`);
+    renderRoyale();
+    royaleMaybeAI();
+  }
+}
+$c('chessStartBtn').onclick = () => startChess(false);
+$c('chessTutBtn').onclick = () => startChess(true);
+
+/* ----- standard rendering & play ----- */
+function chessPlayerBar() {
+  if (activeChess === 'standard') {
+    $c('chessPlayers').innerHTML = ['w','b'].map(col => {
+      const p = CH.players[col];
+      return `<span style="background:rgba(255,255,255,${CH.turn === col && !CH.gameOver ? '.18' : '.06'}); padding:7px 14px; border-radius:999px; font-weight:700;">${col === 'w' ? '⚪' : '⚫'} ${esc(p.name)}${CH.turn === col && !CH.gameOver ? ' · to move' : ''}${CH.inCheck && CH.turn === col && !CH.gameOver ? ' · CHECK!' : ''}</span>`;
+    }).join('');
+  } else {
+    $c('chessPlayers').innerHTML = RO.players.map((p, i) => `<span style="background:rgba(255,255,255,${RO.turn === i && !RO.gameOver ? '.18' : '.05'}); padding:7px 14px; border-radius:999px; font-weight:700; ${p.alive ? '' : 'opacity:.4; text-decoration:line-through;'}"><span style="color:${p.hex};">●</span> ${esc(p.name)}${p.alive ? '' : ' · out'}${RO.turn === i && !RO.gameOver ? ' · to move' : ''}</span>`).join('');
+  }
+}
+function chessActionButtons(onResign) {
+  const a = $c('chessAction');
+  if (activeChess === 'standard' && CH.pendingPromo) {
+    a.innerHTML = '<span style="align-self:center; font-weight:700;">Promote pawn to:</span>';
+    [['q','♛︎ Queen'],['r','♜︎ Rook'],['b','♝︎ Bishop'],['n','♞︎ Knight']].forEach(([t, label]) => {
+      const b = document.createElement('button'); b.textContent = label; b.className = 'btn-gold';
+      b.onclick = () => { const m = { ...CH.pendingPromo, promoPiece: t }; CH.pendingPromo = null; chDoMove(m); };
+      a.appendChild(b);
+    });
+    return;
+  }
+  a.innerHTML = '';
+  const mk = (label, cls, fn) => { const b = document.createElement('button'); b.textContent = label; b.className = cls; b.onclick = fn; a.appendChild(b); };
+  if (!(activeChess === 'standard' ? CH.gameOver : RO.gameOver)) mk('🏳️ Resign / eliminate me', 'btn-red', onResign);
+  mk('🔁 Restart game', 'btn-ghost', () => startChess(chessTutorial));
+  mk('🏠 Back to games', 'btn-green', exitChess);
+}
+function renderChess() {
+  const bd = $c('chessBoard');
+  bd.style.gridTemplateColumns = 'repeat(8, 1fr)';
+  bd.style.width = 'min(92vw, 540px)';
+  bd.innerHTML = '';
+  chessPlayerBar();
+  const st = { bd: CH.board, ep: CH.ep, castling: CH.castling };
+  const allLegal = CH.gameOver ? [] : chLegal(st, CH.turn);
+  CH.inCheck = (() => { const kp = chKingPos(CH.board, CH.turn); return kp ? chIsAttacked(CH.board, kp[0], kp[1], CH.turn === 'w' ? 'b' : 'w') : false; })();
+  if (!CH.gameOver) {
+    if (!allLegal.length) {
+      CH.gameOver = true;
+      CH.result = CH.inCheck ? `Checkmate! ${CH.players[CH.turn === 'w' ? 'b' : 'w'].name} wins! 🏆` : 'Stalemate — it\'s a draw! 🤝';
+      chessLog(CH.inCheck ? `🏆 ${CH.result}` : '🤝 Stalemate — draw.');
+    } else {
+      const nonKings = [];
+      CH.board.forEach(row => row.forEach(p => { if (p && p.t !== 'k') nonKings.push(p.t); }));
+      if (nonKings.length === 0 || (nonKings.length === 1 && ['b','n'].includes(nonKings[0]))) {
+        CH.gameOver = true; CH.result = 'Draw — not enough pieces left to checkmate. 🤝'; chessLog('🤝 Draw by insufficient material.');
+      }
+    }
+  }
+  $c('chessStatus').textContent = CH.gameOver ? CH.result : CH.pendingPromo ? 'Choose promotion…' : `${CH.players[CH.turn].name}${CH.players[CH.turn].isBot ? ' is thinking…' : ''}${CH.inCheck ? ' — CHECK!' : ''}`;
+  const kingSq = chKingPos(CH.board, CH.turn);
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+    const sq = document.createElement('div');
+    const p = CH.board[r][c];
+    let cls = 'chess-sq ' + ((r + c) % 2 ? 'dark' : 'light');
+    if (CH.selected && CH.selected[0] === r && CH.selected[1] === c) cls += ' selected';
+    if (CH.lastMove && ((CH.lastMove.fr === r && CH.lastMove.fc === c) || (CH.lastMove.tr === r && CH.lastMove.tc === c))) cls += ' lastmove';
+    const mv = CH.legalSel.find(m => m.tr === r && m.tc === c);
+    if (mv) cls += mv.capture ? ' capturedot' : ' movedot';
+    if (CH.inCheck && kingSq && kingSq[0] === r && kingSq[1] === c) cls += ' incheck';
+    sq.className = cls;
+    if (p) sq.innerHTML = `<span class="chess-piece" style="font-size:min(9vw,42px); color:${p.c === 'w' ? '#ffffff' : '#191919'}; -webkit-text-stroke:1px ${p.c === 'w' ? '#3a3a3a' : '#e8e0d0'};">${CH_GLYPH[p.t]}︎</span>`;
+    sq.onclick = () => chSquareClick(r, c, allLegal);
+    bd.appendChild(sq);
+  }
+  chessActionButtons(() => {
+    if (CH.gameOver) return;
+    CH.gameOver = true; CH.result = `${CH.players[CH.turn].name} resigns — ${CH.players[CH.turn === 'w' ? 'b' : 'w'].name} wins! 🏆`;
+    chessLog(`🏳️ ${CH.result}`); renderChess();
+  });
+  if (chessTutorial) updateChessCoach(allLegal);
+}
+function chSquareClick(r, c, allLegal) {
+  if (CH.gameOver || CH.pendingPromo) return;
+  const cur = CH.players[CH.turn];
+  if (cur.isBot) return;
+  const own = CH.board[r][c] && CH.board[r][c].c === CH.turn;
+  if (CH.selected) {
+    const m = CH.legalSel.find(x => x.tr === r && x.tc === c);
+    if (m) {
+      if (m.promo) { CH.pendingPromo = m; renderChess(); return; }
+      chDoMove(m); return;
+    }
+  }
+  if (own) {
+    CH.selected = [r, c];
+    CH.legalSel = allLegal.filter(m => m.fr === r && m.fc === c);
+  } else { CH.selected = null; CH.legalSel = []; }
+  renderChess();
+}
+function chDoMove(m) {
+  const mover = CH.turn;
+  const st = { bd: CH.board, ep: CH.ep, castling: CH.castling };
+  const ns = chApplyToState(st, m);
+  CH.board = ns.bd; CH.ep = ns.ep; CH.castling = ns.castling;
+  CH.lastMove = m; CH.selected = null; CH.legalSel = [];
+  chessLog(`${CH.players[mover].name}: ${CH_NAME[m.piece]} ${chSqName(m.fr, m.fc)} → ${chSqName(m.tr, m.tc)}${m.capture ? ' captures ' + CH_NAME[m.capture] : ''}${m.castle ? ' (castles)' : ''}${m.promo ? ' promotes to ' + CH_NAME[m.promoPiece || 'q'] : ''}`);
+  CH.turn = mover === 'w' ? 'b' : 'w';
+  renderChess();
+  chessMaybeAI();
+}
+function chessMaybeAI() {
+  if (!CH || CH.gameOver) return;
+  const cur = CH.players[CH.turn];
+  if (!cur.isBot) return;
+  const gid = chessGameId;
+  setTimeout(() => {
+    if (gid !== chessGameId || !CH || CH.gameOver) return;
+    const m = chBestMove(CH.turn, 3);
+    if (m) {
+      const aiName = cur.name;
+      chDoMove(m);
+      if (CH.gameOver && CH.result.includes(aiName)) aiTalk(aiName, '♟️', pickLine(['Checkmate. Good game — I was never worried.', 'And that\'s the game. Rematch?', 'Calculated. All of it.']));
+      else if (CH.inCheck) aiTalk(aiName, '♟️', pickLine(['Check!', 'Check. Your king is feeling the heat.', 'Mind your king… check!']));
+      else if (m.capture && Math.random() < 0.6) aiTalk(aiName, '♟️', pickLine(['I\'ll take that, thank you.', 'Free piece? Don\'t mind if I do.', 'You needed that piece, right? Needed.', 'Yoink.']));
+      else if (Math.random() < 0.12) aiTalk(aiName, '♟️', pickLine(['Interesting position…', 'I\'ve seen this pattern before.', 'Your move.', 'Thinking three steps ahead. At least.']));
+    }
+  }, 600);
+}
+function updateChessCoach(allLegal) {
+  const txt = $c('chessCoachText');
+  if (CH.gameOver) { txt.innerHTML = `🏁 <b>Game over:</b> ${esc(CH.result)}<br>That's chess! Tap <b>Restart game</b> to practise again, or head back and challenge the AI for real.`; return; }
+  const cur = CH.players[CH.turn];
+  if (cur.isBot) { txt.innerHTML = '🤖 The AI is thinking… watch what it plays. Can you spot what it\'s threatening?'; return; }
+  let help = `⚪ <b>Your move.</b> Tap one of your white pieces and the glowing dots show every square it can legally go to (red ring = capture). ${CH.inCheck ? '<br>⚠️ <b>Your king is in CHECK</b> — you must move the king, block the attack, or capture the attacker!' : ''}`;
+  const best = chBestMove('w', 2);
+  if (best) {
+    help += `<br>🎓 <b>Coach suggests:</b> ${CH_NAME[best.piece]} from <b>${chSqName(best.fr, best.fc)}</b> to <b>${chSqName(best.tr, best.tc)}</b>${best.capture ? ' — capturing their ' + CH_NAME[best.capture] + '!' : '.'} That square is lit up gold for you.`;
+    setTimeout(() => {
+      const bd = $c('chessBoard');
+      const fromSq = bd.children[best.fr * 8 + best.fc], toSq = bd.children[best.tr * 8 + best.tc];
+      if (fromSq) fromSq.classList.add('coachfrom');
+      if (toSq) toSq.classList.add('coachfrom');
+    }, 0);
+  }
+  txt.innerHTML = help;
+}
+
+/* ----- royale rendering & play ----- */
+function renderRoyale() {
+  const bd = $c('chessBoard');
+  bd.style.gridTemplateColumns = 'repeat(14, 1fr)';
+  bd.style.width = 'min(94vw, 600px)';
+  bd.innerHTML = '';
+  chessPlayerBar();
+  $c('chessStatus').textContent = RO.gameOver ? RO.result : `${RO.players[RO.turn].name}${RO.players[RO.turn].isBot ? ' is thinking…' : ''}`;
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+    const sq = document.createElement('div');
+    const p = RO.board[r][c];
+    let cls = 'chess-sq ' + ((r + c) % 2 ? 'dark' : 'light');
+    if (RO.selected && RO.selected[0] === r && RO.selected[1] === c) cls += ' selected';
+    if (RO.lastMove && ((RO.lastMove.fr === r && RO.lastMove.fc === c) || (RO.lastMove.tr === r && RO.lastMove.tc === c))) cls += ' lastmove';
+    const mv = RO.legalSel.find(m => m.tr === r && m.tc === c);
+    if (mv) cls += mv.capture ? ' capturedot' : ' movedot';
+    sq.className = cls;
+    if (p) { const hex = RO.players[p.owner].hex; const lightPiece = ['#ffffff', '#ffd94d'].includes(hex); sq.innerHTML = `<span class="chess-piece" style="font-size:min(5vw,25px); color:${hex}; -webkit-text-stroke:1px ${hex === '#26221f' ? '#e8e0d0' : lightPiece ? '#3a3a3a' : 'rgba(0,0,0,.55)'};">${CH_GLYPH[p.t]}︎</span>`; }
+    sq.onclick = () => roSquareClick(r, c);
+    bd.appendChild(sq);
+  }
+  chessActionButtons(() => {
+    if (RO.gameOver) return;
+    const me = RO.players[RO.turn];
+    if (me.isBot) return;
+    eliminateRoyalePlayer(RO.turn, 'resigned');
+    roAdvanceTurn();
+    renderRoyale(); royaleMaybeAI();
+  });
+}
+function roSquareClick(r, c) {
+  if (RO.gameOver) return;
+  const cur = RO.players[RO.turn];
+  if (cur.isBot || !cur.alive) return;
+  const own = RO.board[r][c] && RO.board[r][c].owner === RO.turn;
+  if (RO.selected) {
+    const m = RO.legalSel.find(x => x.tr === r && x.tc === c);
+    if (m) { roDoMove(m); return; }
+  }
+  if (own) { RO.selected = [r, c]; RO.legalSel = roPseudo(RO.board, r, c); }
+  else { RO.selected = null; RO.legalSel = []; }
+  renderRoyale();
+}
+function eliminateRoyalePlayer(ownerIdx, reason) {
+  const pl = RO.players[ownerIdx];
+  pl.alive = false;
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) if (RO.board[r][c] && RO.board[r][c].owner === ownerIdx) RO.board[r][c] = null;
+  chessLog(`💥 ${pl.name} is eliminated (${reason})! Their remaining pieces are swept from the board.`);
+}
+function roAdvanceTurn() {
+  const aliveCount = RO.players.filter(p => p.alive).length;
+  if (aliveCount <= 1) {
+    RO.gameOver = true;
+    const w = RO.players.find(p => p.alive);
+    RO.result = w ? `🏆 ${w.name} is the last king standing — CHESS ROYALE CHAMPION!` : 'No kings remain — draw!';
+    chessLog(RO.result);
+    return;
+  }
+  let guard = 0;
+  do { RO.turn = (RO.turn + 1) % RO.players.length; } while (!RO.players[RO.turn].alive && guard++ < 20);
+}
+function roDoMove(m) {
+  const mover = RO.players[RO.turn];
+  const piece = RO.board[m.fr][m.fc];
+  const captured = RO.board[m.tr][m.tc];
+  RO.board[m.tr][m.tc] = m.promo ? { t: 'q', owner: piece.owner, moved: true } : { ...piece, moved: true };
+  RO.board[m.fr][m.fc] = null;
+  RO.lastMove = m; RO.selected = null; RO.legalSel = []; RO.passStreak = 0;
+  chessLog(`${mover.name}: ${CH_NAME[m.piece]} → ${captured ? 'captures ' + CH_NAME[captured.t] + ' of ' + RO.players[captured.owner].name : 'moves'}${m.promo ? ' and promotes to Queen!' : ''}`);
+  if (mover.isBot && captured && Math.random() < 0.6) aiTalk(mover.name, '♟️', captured.t === 'k' ? pickLine(['A king has fallen — by my hand!', 'Down goes a king! Who\'s next?', 'Royale means ruthless. Sorry, your majesty.']) : pickLine(['I\'ll take that piece.', 'The Royale board shrinks for you…', 'Every capture counts out here.']));
+  if (captured && captured.t === 'k') eliminateRoyalePlayer(captured.owner, 'king captured');
+  roAdvanceTurn();
+  renderRoyale();
+  royaleMaybeAI();
+}
+function roCloneBd(bd) { return bd.map(row => row.map(p => p ? { ...p } : null)); }
+function roApplyClone(bd, m) {
+  const nb = roCloneBd(bd);
+  const piece = nb[m.fr][m.fc];
+  nb[m.tr][m.tc] = m.promo ? { t: 'q', owner: piece.owner, moved: true } : { ...piece, moved: true };
+  nb[m.fr][m.fc] = null;
+  return nb;
+}
+function roKingAttacked(bd, owner) {
+  let kr = -1, kc = -1;
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) { const p = bd[r][c]; if (p && p.t === 'k' && p.owner === owner) { kr = r; kc = c; } }
+  if (kr < 0) return false; // king already gone
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+    const p = bd[r][c]; if (!p || p.owner === owner) continue;
+    if (roPseudo(bd, r, c).some(m => m.tr === kr && m.tc === kc)) return true;
+  }
+  return false;
+}
+function roSquareAttackedBy(bd, tr, tc, byOwner, ignoreSquare) {
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+    if (ignoreSquare && r === ignoreSquare[0] && c === ignoreSquare[1]) continue;
+    const p = bd[r][c]; if (!p || p.owner !== byOwner) continue;
+    if (roPseudo(bd, r, c).some(m => m.tr === tr && m.tc === tc)) return true;
+  }
+  return false;
+}
+function roBestMove(owner) {
+  const all = [];
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+    const p = RO.board[r][c]; if (!p || p.owner !== owner) continue;
+    for (const m of roPseudo(RO.board, r, c)) all.push(m);
+  }
+  if (!all.length) return null;
+  const kingNow = (() => { for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) { const p = RO.board[r][c]; if (p && p.t === 'k' && p.owner === owner) return [r, c]; } return null; })();
+  const kingInDanger = kingNow && roKingAttacked(RO.board, owner);
+  const scored = all.map(m => {
+    const piece = RO.board[m.fr][m.fc];
+    const nb = roApplyClone(RO.board, m);
+    let s = Math.random() * 15;
+    if (m.capture === 'k') s += 100000;
+    else if (m.capture) s += CH_VAL[m.capture] * 1.2 - CH_VAL[m.piece] / 12; // win material, don't trade queen for pawn
+    if (m.promo) s += CH_VAL.q;
+    // HARD RULE: never move the king into check, and never leave it capturable, if it can be avoided
+    const kingSafe = !roKingAttacked(nb, owner);
+    if (!kingSafe) s -= 60000;
+    if (kingInDanger && kingSafe) s += 5000; // escaping danger is top priority (below only king-capture)
+    // one-move lookahead: can an enemy just take the piece we moved, for free?
+    const movedPiece = nb[m.tr][m.tc];
+    if (movedPiece && m.capture !== 'k') {
+      let worstLoss = 0;
+      for (let r = 0; r < 14 && worstLoss < CH_VAL[movedPiece.t]; r++) for (let c = 0; c < 14; c++) {
+        const ep = nb[r][c]; if (!ep || ep.owner === owner) continue;
+        const cap = roPseudo(nb, r, c).find(x => x.tr === m.tr && x.tc === m.tc);
+        if (cap) {
+          const defended = roSquareAttackedBy(nb, m.tr, m.tc, owner, [m.tr, m.tc]);
+          const net = defended && CH_VAL[ep.t] >= CH_VAL[movedPiece.t] ? 0 : CH_VAL[movedPiece.t] - (defended ? CH_VAL[ep.t] / 2 : 0);
+          worstLoss = Math.max(worstLoss, Math.max(0, net));
+        }
+      }
+      s -= worstLoss * 0.9;
+      // moving a piece that was under attack to safety is good
+      const wasAttacked = RO.players.some((pl, oi) => oi !== owner && pl.alive && roSquareAttackedBy(RO.board, m.fr, m.fc, oi));
+      if (wasAttacked && worstLoss === 0) s += CH_VAL[m.piece] * 0.25;
+    }
+    // putting an enemy king under attack adds pressure
+    for (let oi = 0; oi < RO.players.length; oi++) if (oi !== owner && RO.players[oi].alive && roKingAttacked(nb, oi)) { s += 120; break; }
+    // future threats: what's the juiciest capture this move sets up next turn?
+    let bestNextCapture = 0;
+    for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+      const p2 = nb[r][c]; if (!p2 || p2.owner !== owner) continue;
+      for (const nm of roPseudo(nb, r, c)) if (nm.capture) bestNextCapture = Math.max(bestNextCapture, nm.capture === 'k' ? 5000 : CH_VAL[nm.capture]);
+    }
+    s += bestNextCapture * 0.12;
+    return { m, s, kingSafe };
+  });
+  // if any move keeps the king safe (or captures a king), restrict to those — the AI is blocked from moving into check
+  const safePool = scored.filter(x => x.kingSafe || x.m.capture === 'k');
+  const pool = safePool.length ? safePool : scored;
+  pool.sort((a, b) => b.s - a.s);
+  return pool[0].m;
+}
+function royaleMaybeAI() {
+  if (!RO || RO.gameOver) return;
+  const cur = RO.players[RO.turn];
+  if (!cur.alive) { roAdvanceTurn(); renderRoyale(); return; }
+  if (!cur.isBot) return;
+  const gid = chessGameId;
+  setTimeout(() => {
+    if (gid !== chessGameId || !RO || RO.gameOver) return;
+    const best = roBestMove(RO.turn);
+    if (!best) { // no moves — pass
+      chessLog(`${cur.name} has no legal moves and passes.`);
+      RO.passStreak++;
+      if (RO.passStreak >= RO.players.filter(p => p.alive).length) { RO.gameOver = true; RO.result = 'Every remaining player is stuck — draw! 🤝'; chessLog(RO.result); renderRoyale(); return; }
+      roAdvanceTurn(); renderRoyale(); royaleMaybeAI(); return;
+    }
+    roDoMove(best);
+  }, 550);
+}
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/online.js"></script>
+<script src="/party.js"></script>
+</body>
+</html>
